@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Facebook, Github, Instagram, Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import { AtSign, Globe, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import Logo from "@/components/Logo";
 
 const columns = [
@@ -53,7 +53,7 @@ export default function Footer() {
             </p>
           </div>
           <div className="mt-5 flex gap-3">
-            {[Facebook, Linkedin, Instagram, Github].map((Icon, i) => (
+            {[Globe, AtSign, MessageCircle, Mail].map((Icon, i) => (
               <a
                 key={i}
                 href="#"
