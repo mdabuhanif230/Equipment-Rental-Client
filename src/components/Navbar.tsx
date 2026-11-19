@@ -34,16 +34,21 @@ export default function Navbar() {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const frame = requestAnimationFrame(onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+    };
   }, []);
 
-  // Close menus whenever the route changes
-  useEffect(() => {
+  // Close menus whenever the route changes (state adjusted during render, per React docs)
+  const [lastPath, setLastPath] = useState(pathname);
+  if (lastPath !== pathname) {
+    setLastPath(pathname);
     setMobileOpen(false);
     setMenuOpen(false);
-  }, [pathname]);
+  }
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {

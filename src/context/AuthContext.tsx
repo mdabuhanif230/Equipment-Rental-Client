@@ -58,7 +58,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const token = getToken();
     const cached = getStoredUser<User>();
     if (token && cached) {
-      setUser(cached);
       api
         .get<User>("/auth/me")
         .then((fresh) => {
@@ -66,12 +65,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           updateUserCache(fresh);
         })
         .catch(() => {
-          /* keep cached session if the network hiccups */
+          // network hiccup: fall back to the cached session instead of logging out
+          setUser(cached);
         })
         .finally(() => setLoading(false));
     } else {
       clearSession();
-      setLoading(false);
+      Promise.resolve().then(() => setLoading(false));
     }
   }, []);
 
