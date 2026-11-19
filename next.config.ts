@@ -13,6 +13,14 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  images: {
+    // Owner uploads point at public image hosts (imgbb, Google avatars, ...),
+    // so any remote host is allowed for optimization.
+    remotePatterns: [
+      { protocol: "https", hostname: "**" },
+      { protocol: "http", hostname: "**" },
+    ],
+  },
 };
 
 export default nextConfig;

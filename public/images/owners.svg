@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" width="1000" height="700" role="img" aria-label="Illustration of an equipment owner handing over a tool case">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#062523"/>
+      <stop offset="1" stop-color="#0a1420"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.75" cy="0.3" r="0.7">
+      <stop offset="0" stop-color="#f59e0b" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#f59e0b" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1.4"/>
+    </pattern>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#12a594"/>
+      <stop offset="1" stop-color="#0b6e65"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1000" height="700" fill="url(#bg)"/>
+  <rect width="1000" height="700" fill="url(#grid)"/>
+  <rect width="1000" height="700" fill="url(#glow)"/>
+  <path d="M0 560 H1000 V700 H0 Z" fill="#04090f" opacity="0.7"/>
+  <path d="M0 560 H1000" stroke="#ffffff" stroke-opacity="0.12" stroke-width="2"/>
+
+  <!-- left person (owner) -->
+  <g>
+    <circle cx="300" cy="250" r="58" fill="#7dd3fc" opacity="0.9"/>
+    <path d="M242 244 a58 58 0 0 1 116 0 z" fill="#f59e0b"/>
+    <rect x="232" y="238" width="136" height="14" rx="7" fill="#d97706"/>
+    <path d="M226 560 V420 a74 74 0 0 1 148 0 V560 z" fill="url(#body)"/>
+    <path d="M374 430 l92 62" stroke="#12a594" stroke-width="40" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <!-- right person (customer) -->
+  <g>
+    <circle cx="700" cy="266" r="54" fill="#7dd3fc" opacity="0.75"/>
+    <path d="M646 380 a54 54 0 0 1 108 0" fill="none"/>
+    <path d="M640 560 V432 a64 64 0 0 1 128 0 V560 z" fill="#0d5f57"/>
+    <path d="M640 440 l-84 54" stroke="#0d5f57" stroke-width="38" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <!-- handover tool case -->
+  <g>
+    <rect x="408" y="404" width="184" height="122" rx="16" fill="#f59e0b"/>
+    <rect x="408" y="452" width="184" height="18" fill="#b45309" opacity="0.8"/>
+    <path d="M470 404 a32 24 0 0 1 60 0" fill="none" stroke="#b45309" stroke-width="12"/>
+    <rect x="486" y="480" width="28" height="24" rx="6" fill="#0a1420"/>
+  </g>
+
+  <!-- sparkles -->
+  <g fill="#7dd3fc" opacity="0.6">
+    <circle cx="500" cy="220" r="6"/>
+    <circle cx="560" cy="300" r="4"/>
+    <circle cx="440" cy="286" r="4"/>
+    <circle cx="180" cy="150" r="5"/>
+    <circle cx="830" cy="170" r="5"/>
+  </g>
+
+  <!-- coins -->
+  <g opacity="0.9">
+    <ellipse cx="140" cy="620" rx="44" ry="18" fill="#fbbf24"/>
+    <ellipse cx="140" cy="606" rx="44" ry="18" fill="#fde68a"/>
+    <ellipse cx="866" cy="626" rx="40" ry="16" fill="#fbbf24"/>
+    <ellipse cx="866" cy="613" rx="40" ry="16" fill="#fde68a"/>
+  </g>
+</svg>
