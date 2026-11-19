@@ -51,7 +51,7 @@ function RegisterInner() {
       const created = await register({
         name: form.name.trim(),
         email: form.email.trim(),
-        photo: form.photo.trim() || undefined,
+        photoURL: form.photo.trim() || undefined,
         password: form.password,
       });
       const next = searchParams.get("next");

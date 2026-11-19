@@ -120,9 +120,9 @@ export default function Navbar() {
               >
                 <span className="avatar size-8">
                   <span className="ring-primary ring-offset-base-100 grid w-full place-items-center rounded-full ring-2 ring-offset-1 text-xs font-bold uppercase text-primary">
-                    {user.photo ? (
+                    {user.photoURL ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={user.photo} alt={user.name} className="rounded-full" />
+                      <img src={user.photoURL} alt={user.name} className="rounded-full" />
                     ) : (
                       user.name.charAt(0)
                     )}

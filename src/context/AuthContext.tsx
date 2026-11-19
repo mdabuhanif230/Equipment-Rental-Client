@@ -24,18 +24,20 @@ import type { Role, User } from "@/lib/types";
 interface RegisterInput {
   name: string;
   email: string;
-  photo?: string;
+  photoURL?: string;
   password: string;
 }
+
+type ProfileUpdate = Partial<Pick<User, "name" | "photoURL" | "phone" | "address">>;
 
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
   register: (input: RegisterInput) => Promise<User>;
   login: (email: string, password: string) => Promise<User>;
-  loginWithGoogle: (credential: string) => Promise<User>;
+  loginWithGoogle: (idToken: string) => Promise<User>;
   logout: () => void;
-  updateProfile: (input: Partial<Pick<User, "name" | "photo" | "phone" | "address">>) => Promise<User>;
+  updateProfile: (input: ProfileUpdate) => Promise<User>;
   hasRole: (...roles: Role[]) => boolean;
 }
 
@@ -59,8 +61,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const cached = getStoredUser<User>();
     if (token && cached) {
       api
-        .get<User>("/auth/me")
-        .then((fresh) => {
+        .get<{ user: User }>("/auth/me")
+        .then(({ user: fresh }) => {
           setUser(fresh);
           updateUserCache(fresh);
         })
@@ -96,8 +98,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return res.user;
   }, []);
 
-  const loginWithGoogle = useCallback(async (credential: string): Promise<User> => {
-    const res = await api.post<AuthResponse>("/auth/google", { credential });
+  // Google users always get the customer role (decided by the server)
+  const loginWithGoogle = useCallback(async (idToken: string): Promise<User> => {
+    const res = await api.post<AuthResponse>("/auth/google", { idToken });
     storeSession(res.token, res.user);
     setUser(res.user);
     toast.success(`Welcome, ${res.user.name}!`);
@@ -110,15 +113,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     toast.success("You have been logged out.");
   }, []);
 
-  const updateProfile = useCallback(
-    async (input: Partial<Pick<User, "name" | "photo" | "phone" | "address">>): Promise<User> => {
-      const fresh = await api.patch<User>("/users/me", input);
-      setUser(fresh);
-      updateUserCache(fresh);
-      return fresh;
-    },
-    [],
-  );
+  const updateProfile = useCallback(async (input: ProfileUpdate): Promise<User> => {
+    const { user: fresh } = await api.patch<{ user: User }>("/users/me", input);
+    setUser(fresh);
+    updateUserCache(fresh);
+    return fresh;
+  }, []);
 
   const hasRole = useCallback(
     (...roles: Role[]) => (user ? roles.includes(user.role) : false),
