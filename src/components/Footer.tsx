@@ -2,6 +2,9 @@ import Link from "next/link";
 import { AtSign, Globe, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import Logo from "@/components/Logo";
 
+// Evaluated once at module load so the footer stays prerender-safe
+const YEAR = new Date().getFullYear();
+
 const columns = [
   {
     title: "Platform",
@@ -84,7 +87,7 @@ export default function Footer() {
 
       <div className="border-base-content/10 border-t">
         <div className="container-page flex flex-col items-center justify-between gap-2 py-5 text-xs opacity-70 sm:flex-row">
-          <p>© {new Date().getFullYear()} RentGear — Equipment Rental Platform. All rights reserved.</p>
+          <p>© {YEAR} RentGear — Equipment Rental Platform. All rights reserved.</p>
           <p>Built with Next.js, Express &amp; Stripe</p>
         </div>
       </div>

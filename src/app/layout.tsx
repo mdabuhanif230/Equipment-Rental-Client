@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -42,7 +43,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <ThemeProvider>
           <AuthProvider>
             <div className="flex min-h-screen flex-col">
-              <Navbar />
+              {/* Navbar reads the current URL (usePathname), which streams in after prerendering */}
+              <Suspense
+                fallback={
+                  <div className="bg-base-100/70 h-16 border-b border-transparent backdrop-blur-sm md:h-[72px]" />
+                }
+              >
+                <Navbar />
+              </Suspense>
               <main className="flex-1">{children}</main>
               <Footer />
             </div>

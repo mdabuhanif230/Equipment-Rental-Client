@@ -5,12 +5,14 @@ import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Search, ShieldCheck, Wallet, Wrench } from "lucide-react";
 
+const EASE: [number, number, number, number] = [0.22, 0.61, 0.36, 1];
+
 const container = {
   hidden: { opacity: 0, y: 30 },
   show: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, delay: i * 0.12, ease: [0.22, 0.61, 0.36, 1] },
+    transition: { duration: 0.7, delay: i * 0.12, ease: EASE },
   }),
 };
 
