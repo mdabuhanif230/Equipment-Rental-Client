@@ -56,6 +56,7 @@ export default function ContactPage() {
       <section className="section-pad bg-base-100">
         <div className="container-page">
           <SectionHeading
+            level="h1"
             eyebrow="Contact us"
             title={
               <>

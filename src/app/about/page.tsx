@@ -55,6 +55,7 @@ export default function AboutPage() {
         <div className="container-page grid items-center gap-10 lg:grid-cols-2">
           <SectionHeading
             align="left"
+            level="h1"
             eyebrow="About RentGear"
             title={
               <>
