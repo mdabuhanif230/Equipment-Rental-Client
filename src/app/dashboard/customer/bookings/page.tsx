@@ -59,7 +59,7 @@ export default function CustomerBookingsPage() {
         title="My Bookings"
         subtitle="Every rental you have requested, with live payment and status."
         actions={
-          <Link href="/all-equipment" className="btn btn-outline btn-sm font-semibold">
+          <Link href="/all-equipment" className="ui-button ui-button-outline ui-button-sm font-semibold">
             New booking
           </Link>
         }
@@ -73,7 +73,7 @@ export default function CustomerBookingsPage() {
           title="No bookings yet"
           description="Once you book equipment, every rental, payment and cancellation shows up here."
           action={
-            <Link href="/all-equipment" className="btn btn-primary btn-sm mt-2">
+            <Link href="/all-equipment" className="ui-button ui-button-primary ui-button-sm mt-2">
               Browse equipment
             </Link>
           }
