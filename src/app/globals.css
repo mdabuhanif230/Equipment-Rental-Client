@@ -252,6 +252,13 @@ body {
   overflow: hidden;
 }
 
+/* Tables opting into scroll-thin must be able to scroll horizontally;
+   the base class above would otherwise clip the rightmost columns. */
+.table-surface.scroll-thin {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 .hero-overlay {
   background: linear-gradient(
     100deg,

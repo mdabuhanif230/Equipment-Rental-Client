@@ -141,15 +141,15 @@ export default function BookingsTable({
             return (
               <tr key={b._id}>
                 <td className="font-mono text-xs">#{b._id.slice(-8)}</td>
-                <td>
+                <td className="max-w-44">
                   <p className="font-bold">{b.customerName}</p>
                   <p className="truncate text-xs opacity-55">{b.customerEmail}</p>
                 </td>
-                <td className="min-w-40">
+                <td className="max-w-44 min-w-32">
                   <p className="font-semibold">{b.ownerName || "—"}</p>
                   {b.ownerEmail && <p className="truncate text-xs opacity-55">{b.ownerEmail}</p>}
                 </td>
-                <td className="min-w-40 font-semibold">{b.equipmentName}</td>
+                <td className="min-w-32 font-semibold">{b.equipmentName}</td>
                 <td>{period(b)}</td>
                 <td className="font-black">{formatCurrency(b.totalAmount)}</td>
                 <td><PaymentBadge status={b.paymentStatus} /></td>
