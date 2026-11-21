@@ -41,7 +41,7 @@ const values = [
 ];
 
 const stack = [
-  { label: "Frontend", items: "Next.js App Router · TypeScript · Tailwind CSS · DaisyUI · Framer Motion · Recharts" },
+  { label: "Frontend", items: "Next.js App Router · TypeScript · Tailwind CSS · shadcn/ui · Framer Motion · Recharts" },
   { label: "Backend", items: "Express · MongoDB Atlas · JSON Web Tokens · bcrypt" },
   { label: "Payments", items: "Stripe Checkout with server-side verification and webhook fallback" },
   { label: "Auth", items: "Email/password plus Google social login (customers only)" },
@@ -65,10 +65,10 @@ export default function AboutPage() {
             subtitle="RentGear connects people who own tools and machines with people who need them — for a day, a week or a month. Owners earn, renters save, and nothing gathers dust."
           >
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/all-equipment" className="btn btn-primary px-6 font-bold">
+              <Link href="/all-equipment" className="ui-button ui-button-primary px-6 font-bold">
                 Browse equipment <ArrowRight className="size-4" />
               </Link>
-              <Link href="/register" className="btn btn-outline px-6 font-bold">
+              <Link href="/register" className="ui-button ui-button-outline px-6 font-bold">
                 Become an owner
               </Link>
             </div>
@@ -79,7 +79,7 @@ export default function AboutPage() {
               <div
                 aria-hidden
                 className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: "url(/images/owners.svg)" }}
+                style={{ backgroundImage: "url(/images/owners.png)" }}
               />
               <div className="hero-overlay absolute inset-0" />
               <div className="absolute inset-x-0 bottom-0 p-6 text-white">
@@ -140,7 +140,7 @@ export default function AboutPage() {
 
           <Reveal delay={0.2}>
             <div className="mt-10 text-center">
-              <Link href="/contact" className="btn btn-primary px-7 font-bold">
+              <Link href="/contact" className="ui-button ui-button-primary px-7 font-bold">
                 Get in touch
               </Link>
             </div>
