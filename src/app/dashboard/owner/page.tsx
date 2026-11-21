@@ -57,10 +57,10 @@ export default function OwnerDashboardPage() {
         subtitle="Earnings, rentals and listings that belong to you."
         actions={
           <>
-            <Link href="/dashboard/owner/equipment" className="btn btn-outline btn-sm font-semibold">
+            <Link href="/dashboard/owner/equipment" className="ui-button ui-button-outline ui-button-sm font-semibold">
               Manage equipment
             </Link>
-            <Link href="/dashboard/owner/bookings" className="btn btn-primary btn-sm font-semibold">
+            <Link href="/dashboard/owner/bookings" className="ui-button ui-button-primary ui-button-sm font-semibold">
               All bookings
             </Link>
           </>
@@ -118,7 +118,7 @@ export default function OwnerDashboardPage() {
         <section>
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-lg font-extrabold">Latest bookings</h2>
-            <Link href="/dashboard/owner/bookings" className="btn btn-ghost btn-xs font-semibold">
+            <Link href="/dashboard/owner/bookings" className="ui-button ui-button-ghost ui-button-xs font-semibold">
               View all →
             </Link>
           </div>
