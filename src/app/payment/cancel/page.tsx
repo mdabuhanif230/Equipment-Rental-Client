@@ -80,7 +80,7 @@ function PaymentCancelInner() {
           </div>
 
           <div className="p-6 text-left">
-            {error && <div className="alert alert-warning mb-4 text-xs">{error}</div>}
+            {error && <div className="ui-alert ui-alert-warning mb-4 text-xs">{error}</div>}
 
             {booking ? (
               <div className="bg-base-200 mb-5 rounded-2xl p-4 text-sm">
@@ -93,20 +93,20 @@ function PaymentCancelInner() {
                   {formatCurrency(booking.totalAmount)}
                 </p>
                 <p className="mt-1 flex gap-2">
-                  <span className="badge badge-sm capitalize badge-outline">{booking.status}</span>
-                  <span className="badge badge-warning badge-sm capitalize">{booking.paymentStatus}</span>
+                  <span className="ui-badge ui-badge-sm capitalize ui-badge-outline">{booking.status}</span>
+                  <span className="ui-badge ui-badge-warning ui-badge-sm capitalize">{booking.paymentStatus}</span>
                 </p>
               </div>
             ) : (
               <p className="mb-5 flex items-center gap-2 text-sm opacity-60">
-                <span className="loading loading-spinner loading-sm" /> Loading booking…
+                <span className="ui-loading ui-loading-spinner ui-loading-sm" /> Loading booking…
               </p>
             )}
 
             <div className="grid gap-3">
               <button
                 type="button"
-                className="btn btn-primary font-bold"
+                className="ui-button ui-button-primary font-bold"
                 onClick={retryPayment}
                 disabled={busy || !booking || !cancellable}
               >
@@ -114,17 +114,17 @@ function PaymentCancelInner() {
               </button>
               <button
                 type="button"
-                className="btn btn-outline btn-error"
+                className="ui-button ui-button-outline ui-button-error"
                 onClick={cancelBooking}
                 disabled={busy || !cancellable}
               >
                 <XCircle className="size-4" /> Cancel this booking
               </button>
               <div className="grid gap-3 sm:grid-cols-2">
-                <Link href="/dashboard/customer" className="btn btn-ghost btn-sm">
+                <Link href="/dashboard/customer" className="ui-button ui-button-ghost ui-button-sm">
                   My bookings
                 </Link>
-                <Link href="/" className="btn btn-ghost btn-sm">
+                <Link href="/" className="ui-button ui-button-ghost ui-button-sm">
                   <Home className="size-4" /> Back home
                 </Link>
               </div>
@@ -141,7 +141,7 @@ export default function PaymentCancelPage() {
     <Suspense
       fallback={
         <div className="grid min-h-[70vh] place-items-center">
-          <span className="loading loading-spinner loading-lg text-primary" />
+          <span className="ui-loading ui-loading-spinner ui-loading-lg text-primary" />
         </div>
       }
     >
