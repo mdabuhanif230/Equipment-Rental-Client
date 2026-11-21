@@ -31,6 +31,15 @@ const ICONS: { keywords: string[]; icon: LucideIcon }[] = [
   { keywords: ["clean", "wash", "home"], icon: Sparkles },
 ];
 
+const REQUIRED_CATEGORIES = [
+  "Construction Equipment",
+  "Photography Equipment",
+  "Vehicles & Transportation",
+  "Agriculture Equipment",
+  "Electronics",
+  "Event Equipment",
+];
+
 function iconFor(category: string): LucideIcon {
   const key = category.toLowerCase();
   return ICONS.find((entry) => entry.keywords.some((k) => key.includes(k)))?.icon ?? Wrench;
@@ -39,6 +48,14 @@ function iconFor(category: string): LucideIcon {
 export default function CategoriesSection() {
   const [items, setItems] = useState<CategoryCount[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const visibleCategories = [
+    ...REQUIRED_CATEGORIES.map((category) => ({
+      category,
+      count: items.find((item) => item.category.toLowerCase() === category.toLowerCase())?.count ?? 0,
+    })),
+    ...items.filter((item) => !REQUIRED_CATEGORIES.some((category) => category.toLowerCase() === item.category.toLowerCase())),
+  ];
 
   useEffect(() => {
     let active = true;
@@ -68,7 +85,7 @@ export default function CategoriesSection() {
         />
 
         <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {(loading ? Array.from({ length: 4 }) : items).map((entry, i) => {
+          {(loading ? Array.from({ length: 6 }) : visibleCategories).map((entry, i) => {
             const category = (entry as CategoryCount | undefined)?.category;
             const count = (entry as CategoryCount | undefined)?.count;
             const Icon = category ? iconFor(category) : Wrench;
@@ -84,12 +101,10 @@ export default function CategoriesSection() {
                   className="card-surface group flex h-full flex-col items-center gap-2 p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary hover:shadow-lg"
                 >
                   <span className="bg-primary/10 text-primary grid size-14 place-items-center rounded-2xl transition-colors group-hover:bg-primary group-hover:text-primary-content">
-                    {category ? <Icon className="size-6" /> : <span className="skeleton size-6 rounded-full" />}
+                    {category ? <Icon className="size-6" /> : <span className="ui-skeleton size-6 rounded-full" />}
                   </span>
                   <span className="font-bold">{category ?? "Loading…"}</span>
-                  {category && (
-                    <span className="text-xs font-medium opacity-60">{count} item(s)</span>
-                  )}
+                  {category && <span className="text-xs font-medium opacity-60">{count} item(s)</span>}
                 </Link>
               </Reveal>
             );
