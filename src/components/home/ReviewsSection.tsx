@@ -5,6 +5,7 @@ import { formatDistanceToNow } from "@/lib/format";
 import SectionHeading from "@/components/SectionHeading";
 import Reveal from "@/components/Reveal";
 import Rating from "@/components/Rating";
+import UserAvatar from "@/components/UserAvatar";
 import { api } from "@/lib/api";
 import type { Review } from "@/lib/types";
 
@@ -115,18 +116,12 @@ export default function ReviewsSection() {
                   &ldquo;{review.comment}&rdquo;
                 </blockquote>
                 <figcaption className="mt-auto flex items-center gap-3 border-base-content/10 pt-4 border-t">
-                  <span className="bg-primary/15 text-primary grid size-10 shrink-0 place-items-center rounded-full text-sm font-bold uppercase">
-                    {review.userPhoto ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={review.userPhoto}
-                        alt={review.userName}
-                        className="size-10 rounded-full object-cover"
-                      />
-                    ) : (
-                      review.userName?.charAt(0) || "?"
-                    )}
-                  </span>
+                  <UserAvatar
+                    name={review.userName || "?"}
+                    photoURL={review.userPhoto}
+                    className="bg-primary/15 text-primary grid size-10 shrink-0 place-items-center rounded-full text-sm font-bold uppercase"
+                    imgClassName="size-10 rounded-full object-cover"
+                  />
                   <span className="min-w-0">
                     <span className="block truncate text-sm font-bold">{review.userName}</span>
                     <span className="block truncate text-xs opacity-60">

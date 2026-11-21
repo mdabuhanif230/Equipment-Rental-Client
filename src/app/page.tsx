@@ -1,4 +1,5 @@
 import Hero from "@/components/home/Hero";
+import TrustTicker from "@/components/home/TrustTicker";
 import FeaturedSection from "@/components/home/FeaturedSection";
 import CategoriesSection from "@/components/home/CategoriesSection";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
@@ -10,6 +11,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <TrustTicker />
       <FeaturedSection />
       <CategoriesSection />
       <WhyChooseUs />

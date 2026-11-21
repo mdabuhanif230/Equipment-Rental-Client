@@ -3,9 +3,18 @@
 **Project name:** RentGear
 **Purpose:** The customer-facing web application for an equipment rental marketplace: customers search and rent verified tools and machines, owners list their gear and track earnings, and administrators moderate the whole platform — with bookings paid through Stripe.
 
-- **Live URL:** _Not deployed yet — add the production client URL after deployment._
-- **API / backend repository:** [`../equipment-rental-server`](../equipment-rental-server) (Express + MongoDB + Stripe)
+- **Live URL:** https://equipment-rental-client-nine.vercel.app
+- **Live API:** https://equipment-rental-server-two.vercel.app
+- **API / backend repository:** https://github.com/mdabuhanif230/Equipment-Rental-Server (local: [`../equipment-rental-server`](../equipment-rental-server))
+- **Client repository:** https://github.com/mdabuhanif230/-Equipment-Rental-Client-
 - **Local dev URL:** http://localhost:3000
+
+### Submission details (Assignment 9 — Category 003)
+- **Admin Email:** `mhabuhanif230@gmail.com`
+- **Admin Password:** `Hanif15387126` _(demo credential for evaluator only)_
+- **Live Site Link:** https://equipment-rental-client-nine.vercel.app
+- **GitHub Repository (server):** https://github.com/mdabuhanif230/Equipment-Rental-Server
+- **GitHub Repository (client):** https://github.com/mdabuhanif230/-Equipment-Rental-Client-
 
 ---
 
@@ -39,7 +48,7 @@
 - **Auth:** Better Auth email/password register & login (uppercase + lowercase + minimum 6 characters), Google social login (Google users default to `customer`), and Better Auth JWTs used for protected API requests. Sessions refresh on reload without bouncing a logged-in user to `/login`.
 - **RBAC:** `customer`, `owner` and `admin` roles are checked by `verifyToken` / `verifyRenter` / `verifyOwner` / `verifyAdmin` on the API, and mirrored by client-side route guards.
 - **UX:** toasts for every action, loading skeletons, dedicated loading/error/404 pages, responsive layout down to mobile, and a persisted **dark/light theme toggle** (stored in `localStorage`, applied before first paint).
-- **Design system:** one brand palette (teal + amber), one type scale (`.section-title`, `.eyebrow`, `.section-subtitle`), consistent cards, tables and buttons across every page.
+- **Design system:** one brand palette (ink + deep teal + coral + lime), one type scale (`.section-title`, `.eyebrow`, `.section-subtitle`), consistent cards, tables and buttons across every page.
 
 ---
 

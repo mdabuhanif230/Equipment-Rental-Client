@@ -19,6 +19,7 @@ import {
 import AuthGuard from "@/components/AuthGuard";
 import BookingModal from "@/components/equipment/BookingModal";
 import ReviewSection from "@/components/equipment/ReviewSection";
+import UserAvatar from "@/components/UserAvatar";
 import { api } from "@/lib/api";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { useAuth } from "@/context/AuthContext";
@@ -213,18 +214,12 @@ function EquipmentDetails({ id }: { id: string }) {
               <div className="bg-base-200/70 mt-6 rounded-2xl p-4">
                 <h2 className="text-base font-bold">Owner information</h2>
                 <div className="mt-3 flex items-center gap-3">
-                  {item.ownerPhoto ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={item.ownerPhoto}
-                      alt={item.ownerName}
-                      className="size-11 shrink-0 rounded-full object-cover"
-                    />
-                  ) : (
-                    <span className="bg-primary/15 text-primary grid size-11 shrink-0 place-items-center rounded-full font-black uppercase">
-                      {(item.ownerName || "O").charAt(0)}
-                    </span>
-                  )}
+                  <UserAvatar
+                    name={item.ownerName || "O"}
+                    photoURL={item.ownerPhoto}
+                    className="bg-primary/15 text-primary grid size-11 shrink-0 place-items-center rounded-full font-black uppercase"
+                    imgClassName="size-11 rounded-full object-cover"
+                  />
                   <div className="min-w-0">
                     <p className="truncate text-sm font-bold">{item.ownerName}</p>
                     {item.ownerEmail && (

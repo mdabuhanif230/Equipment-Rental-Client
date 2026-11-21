@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SiteChrome from "@/components/SiteChrome";
 import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import "./globals.css";
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       >
         <ThemeProvider>
           <AuthProvider>
+            <SiteChrome />
             <div className="flex min-h-screen flex-col">
               {/* Navbar reads the current URL (usePathname), which streams in after prerendering */}
               <Suspense

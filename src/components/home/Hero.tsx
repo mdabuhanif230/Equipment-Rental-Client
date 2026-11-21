@@ -157,7 +157,7 @@ export default function Hero() {
           className="relative mx-auto w-full max-w-2xl lg:translate-x-3"
         >
           <div className="absolute -inset-3 rotate-3 rounded-[2.5rem] border border-primary/15 bg-primary/[0.035]" aria-hidden />
-          <div className="relative aspect-[1.08] overflow-hidden rounded-[2rem] border border-white/15 bg-[#062c25] shadow-2xl shadow-primary/20 sm:aspect-[1.2] lg:aspect-[0.98]">
+          <div className="relative aspect-[1.08] overflow-hidden rounded-[1.4rem] border border-white/15 bg-[#041b17] shadow-2xl shadow-primary/25 sm:aspect-[1.2] lg:aspect-[0.98]">
             <Image
               src="/images/hero-equipment-light.png"
               alt="Yellow excavator ready for a construction project"
@@ -166,20 +166,20 @@ export default function Hero() {
               sizes="(min-width: 1024px) 46vw, 100vw"
               className="object-cover transition-transform duration-700 hover:scale-[1.035]"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#041a17]/95 via-[#062c25]/5 to-[#062c25]/10" />
-            <div className="absolute left-5 top-5 flex items-center gap-2 rounded-full border border-white/15 bg-[#082c25]/75 px-3.5 py-2 text-xs font-semibold tracking-wide text-white backdrop-blur-md sm:left-7 sm:top-7">
+            <div className="absolute inset-0 bg-gradient-to-t from-[#041b17]/95 via-[#041b17]/5 to-[#041b17]/10" />
+            <div className="absolute left-5 top-5 flex items-center gap-2 rounded-full border border-white/15 bg-[#041b17]/80 px-3.5 py-2 text-xs font-semibold tracking-wide text-white backdrop-blur-md sm:left-7 sm:top-7">
               <span className="size-2 rounded-full bg-[#79d5a8] shadow-[0_0_12px_#79d5a8]" />
               EQUIPMENT THAT SHOWS UP
             </div>
-            <div className="absolute inset-x-5 bottom-5 rounded-[1.5rem] border border-white/15 bg-[#09251f]/80 p-5 text-white shadow-xl backdrop-blur-xl sm:inset-x-7 sm:bottom-7 sm:p-6">
-              <div className="flex items-center gap-2 text-xs font-bold tracking-[0.16em] text-[#a6d8c2] uppercase">
+            <div className="absolute inset-x-5 bottom-5 rounded-[1.1rem] border border-white/15 bg-[#041b17]/85 p-5 text-white shadow-xl backdrop-blur-xl sm:inset-x-7 sm:bottom-7 sm:p-6">
+              <div className="flex items-center gap-2 text-xs font-bold tracking-[0.16em] text-[#d4ee55] uppercase">
                 <Sparkles className="size-3.5" /> Rent. Use. Return.
               </div>
               <p className="mt-2 max-w-md text-xl leading-tight font-bold sm:text-2xl">
                 The right equipment, right when you need it.
               </p>
               <div className="mt-5 flex items-center justify-between border-t border-white/15 pt-4 text-xs text-white/75">
-                <span className="inline-flex items-center gap-2"><CalendarDays className="size-4 text-[#83d0ae]" /> Book by the day or week</span>
+                <span className="inline-flex items-center gap-2"><CalendarDays className="size-4 text-[#d4ee55]" /> Book by the day or week</span>
                 <span className="font-semibold text-white">Local owners · Real gear</span>
               </div>
             </div>

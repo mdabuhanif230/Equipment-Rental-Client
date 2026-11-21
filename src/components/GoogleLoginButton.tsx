@@ -45,7 +45,7 @@ interface GoogleIdentity {
 declare global {
   interface Window {
     google?: GoogleIdentity;
-    __rentgearGoogleClientId?: string;
+    __rentgearGoogleInitKey?: string;
     __rentgearGoogleCredentialHandler?: ((credential: string) => void) | null;
   }
 }
@@ -104,20 +104,20 @@ export default function GoogleLoginButton({
     const renderGoogleButton = () => {
       const element = buttonRef.current;
       if (cancelled || !element || !window.google) return;
-      if (!window.__rentgearGoogleClientId) {
+      // Use the standard Google account-chooser page instead of Chrome's compact FedCM dialog.
+      // Re-initialize whenever these options change (e.g. after a hot reload).
+      const initKey = `${clientId}|fedcm:false`;
+      if (window.__rentgearGoogleInitKey !== initKey) {
         window.google.accounts.id.initialize({
           client_id: clientId,
-          use_fedcm_for_button: true,
+          use_fedcm_for_button: false,
           button_auto_select: false,
           callback: ({ credential }) => {
             if (credential) window.__rentgearGoogleCredentialHandler?.(credential);
             else toast.error("Google did not return a sign-in credential.");
           },
         });
-        window.__rentgearGoogleClientId = clientId;
-      } else if (window.__rentgearGoogleClientId !== clientId) {
-        toast.error("Google sign-in settings changed. Reload the page and try again.");
-        return;
+        window.__rentgearGoogleInitKey = initKey;
       }
       element.replaceChildren();
       window.google.accounts.id.renderButton(element, {

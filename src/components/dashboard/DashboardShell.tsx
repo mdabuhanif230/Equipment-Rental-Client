@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { ExternalLink, LayoutDashboard, LogOut, UserRound } from "lucide-react";
+import UserAvatar from "@/components/UserAvatar";
 import { useAuth } from "@/context/AuthContext";
 import type { Role } from "@/lib/types";
 
@@ -56,18 +57,12 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
       <div className="grid items-start gap-6 lg:grid-cols-[250px_minmax(0,1fr)]">
         <aside className="card-surface sticky top-24 p-4">
           <div className="flex items-center gap-3 border-base-content/10 border-b pb-4">
-            <span className="bg-primary/15 text-primary grid size-11 shrink-0 place-items-center rounded-full font-black uppercase">
-              {user.photoURL ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={user.photoURL}
-                  alt={user.name}
-                  className="h-11 w-11 rounded-full object-cover"
-                />
-              ) : (
-                user.name.charAt(0)
-              )}
-            </span>
+            <UserAvatar
+              name={user.name}
+              photoURL={user.photoURL}
+              className="bg-primary/15 text-primary grid size-11 shrink-0 place-items-center rounded-full font-black uppercase"
+              imgClassName="size-11 rounded-full object-cover"
+            />
             <span className="min-w-0">
               <span className="block truncate text-sm font-extrabold">{user.name}</span>
               <span className="ui-badge ui-badge-primary ui-badge-sm mt-1 capitalize">{user.role}</span>

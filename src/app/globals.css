@@ -1,70 +1,70 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fbf8f1;
-  --foreground: #172923;
-  --card: #fffdf8;
-  --card-foreground: #172923;
-  --popover: #fffdf8;
-  --popover-foreground: #172923;
-  --primary: #176b57;
+  --background: #f2f6f2;
+  --foreground: #0d1f1c;
+  --card: #ffffff;
+  --card-foreground: #0d1f1c;
+  --popover: #ffffff;
+  --popover-foreground: #0d1f1c;
+  --primary: #05463f;
   --primary-foreground: #ffffff;
-  --secondary: #e8783e;
-  --secondary-foreground: #fffaf4;
-  --muted: #f1ece1;
-  --muted-foreground: #66736c;
-  --accent: #d4a34f;
-  --accent-foreground: #ffffff;
-  --destructive: #dc2626;
+  --secondary: #ff6b45;
+  --secondary-foreground: #2a0c05;
+  --muted: #e7eee8;
+  --muted-foreground: #5c736b;
+  --accent: #d4ee55;
+  --accent-foreground: #17240a;
+  --destructive: #d92d3a;
   --destructive-foreground: #ffffff;
-  --border: #e4dccd;
-  --input: #ddd5c8;
-  --ring: #176b57;
-  --success: #15803d;
+  --border: #c9d8d0;
+  --input: #cbd9d2;
+  --ring: #0a735f;
+  --success: #12834f;
   --success-foreground: #ffffff;
-  --warning: #d97706;
+  --warning: #d9820b;
   --warning-foreground: #ffffff;
-  --info: #0284c7;
+  --info: #0e78a6;
   --info-foreground: #ffffff;
-  --base-100: #fbf8f1;
-  --base-200: #f1ece1;
-  --base-300: #e4dccd;
-  --radius: 0.9rem;
-  --radius-box: 0.9rem;
-  --brand-gradient: linear-gradient(115deg, #176b57 0%, #2b9172 58%, #e8783e 125%);
+  --base-100: #ffffff;
+  --base-200: #e7eee8;
+  --base-300: #c9d8d0;
+  --radius: 0.55rem;
+  --radius-box: 0.7rem;
+  --brand-gradient: linear-gradient(115deg, #043a35 0%, #0a7a68 55%, #ff6b45 130%);
 }
 
 :root[data-theme="geardark"] {
   color-scheme: dark;
-  --background: #111a17;
-  --foreground: #edf0e8;
-  --card: #192520;
-  --card-foreground: #edf0e8;
-  --popover: #192520;
-  --popover-foreground: #edf0e8;
-  --primary: #54bd94;
-  --primary-foreground: #08251b;
-  --secondary: #f19461;
-  --secondary-foreground: #32160a;
-  --muted: #192520;
-  --muted-foreground: #aab8af;
-  --accent: #e0bc70;
-  --accent-foreground: #30230c;
-  --destructive: #f87171;
-  --destructive-foreground: #3f0d0d;
-  --border: #26362e;
-  --input: #34443b;
-  --ring: #54bd94;
-  --success: #4ade80;
-  --success-foreground: #052e16;
-  --warning: #fbbf24;
-  --warning-foreground: #1c1917;
-  --info: #38bdf8;
-  --info-foreground: #06283a;
-  --base-100: #111a17;
-  --base-200: #192520;
-  --base-300: #26362e;
-  --brand-gradient: linear-gradient(115deg, #54bd94 0%, #92d6a7 58%, #f19461 125%);
+  --background: #081412;
+  --foreground: #eef5ef;
+  --card: #102420;
+  --card-foreground: #eef5ef;
+  --popover: #102420;
+  --popover-foreground: #eef5ef;
+  --primary: #49d9a7;
+  --primary-foreground: #06241c;
+  --secondary: #ff8b64;
+  --secondary-foreground: #2b0d06;
+  --muted: #142b26;
+  --muted-foreground: #9db9af;
+  --accent: #d4ee55;
+  --accent-foreground: #1b2708;
+  --destructive: #ff6b72;
+  --destructive-foreground: #35090d;
+  --border: #21443b;
+  --input: #2b5348;
+  --ring: #49d9a7;
+  --success: #54e39b;
+  --success-foreground: #04291a;
+  --warning: #ffc247;
+  --warning-foreground: #2c1b00;
+  --info: #67c8ef;
+  --info-foreground: #05283a;
+  --base-100: #102420;
+  --base-200: #142b26;
+  --base-300: #21443b;
+  --brand-gradient: linear-gradient(115deg, #49d9a7 0%, #d4ee55 58%, #ff8b64 130%);
 }
 
 @theme inline {
@@ -128,13 +128,33 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
-  background-image: radial-gradient(color-mix(in oklab, var(--color-base-content) 4%, transparent) 0.7px, transparent 0.7px);
-  background-size: 9px 9px;
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--color-primary) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--color-primary) 4%, transparent) 1px, transparent 1px);
+  background-size: 34px 34px;
 }
 
 ::selection {
   color: var(--color-primary-content);
   background: var(--color-primary);
+}
+
+/* Signature motion: seamless trust signal marquee */
+@keyframes rentgear-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.rentgear-marquee {
+  animation: rentgear-marquee 38s linear infinite;
+}
+
+.rentgear-marquee:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rentgear-marquee { animation: none; }
 }
 
 :focus-visible {
@@ -180,19 +200,28 @@ body {
 .eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
+  gap: 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--color-primary);
 }
 
+.eyebrow::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: none;
+  background: var(--color-secondary);
+  transform: rotate(45deg);
+}
+
 .section-title {
-  font-size: clamp(1.75rem, 3.4vw, 2.6rem);
-  font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.85rem, 3.6vw, 2.9rem);
+  font-weight: 900;
+  line-height: 1.06;
+  letter-spacing: -0.045em;
 }
 
 .section-subtitle {
@@ -204,9 +233,10 @@ body {
 
 .card-surface {
   background-color: var(--color-base-100);
-  border: 1px solid color-mix(in oklab, var(--color-base-content) 9%, transparent);
-  border-radius: 1.35rem;
-  box-shadow: 0 8px 28px -24px color-mix(in oklab, var(--color-base-content) 45%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-primary) 14%, var(--color-border));
+  border-radius: 0.9rem;
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--color-primary) 8%, transparent),
+    0 14px 34px -28px color-mix(in oklab, var(--color-primary) 60%, transparent);
 }
 
 .stat-surface {
@@ -225,9 +255,9 @@ body {
 .hero-overlay {
   background: linear-gradient(
     100deg,
-    color-mix(in oklab, #10261f 93%, transparent) 0%,
-    color-mix(in oklab, #10261f 72%, transparent) 48%,
-    color-mix(in oklab, #10261f 25%, transparent) 100%
+    color-mix(in oklab, #041b17 95%, transparent) 0%,
+    color-mix(in oklab, #041b17 74%, transparent) 48%,
+    color-mix(in oklab, #041b17 28%, transparent) 100%
   );
 }
 
@@ -239,11 +269,12 @@ body {
   justify-content: center;
   gap: 0.5rem;
   border: 1px solid transparent;
-  border-radius: 0.75rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 650;
-  letter-spacing: -0.01em;
+  border-radius: 0.45rem;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
   transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, border-color 180ms ease;
 }
 
@@ -259,7 +290,7 @@ body {
   box-shadow: none;
 }
 
-.ui-button-primary { background: var(--primary); color: var(--primary-foreground); }
+.ui-button-primary { background: var(--brand-gradient); color: var(--primary-foreground); box-shadow: inset 0 1px 0 color-mix(in oklab, #fff 22%, transparent); }
 .ui-button-secondary { background: var(--secondary); color: var(--secondary-foreground); }
 .ui-button-outline { border-color: var(--border); background: var(--card); color: var(--foreground); }
 .ui-button-ghost { background: transparent; color: var(--foreground); }
@@ -280,7 +311,7 @@ body {
 .ui-textarea {
   width: 100%;
   border: 1px solid var(--input);
-  border-radius: 0.75rem;
+  border-radius: 0.45rem;
   background: var(--card);
   color: var(--foreground);
   padding: 0.625rem 0.75rem;
@@ -309,13 +340,15 @@ body {
   width: fit-content;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem;
+  gap: 0.3rem;
   border: 1px solid transparent;
-  border-radius: 9999px;
-  padding: 0.2rem 0.65rem;
-  font-size: 0.75rem;
-  font-weight: 650;
+  border-radius: 0.3rem;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
   line-height: 1.25;
+  text-transform: uppercase;
 }
 
 .ui-badge-sm { padding: 0.125rem 0.5rem; font-size: 0.6875rem; }

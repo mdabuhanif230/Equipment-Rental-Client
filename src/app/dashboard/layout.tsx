@@ -1,36 +1,10 @@
-"use client";
+import type { ReactNode } from "react";
+import DashboardFrame from "@/components/dashboard/DashboardFrame";
 
-import { Suspense, useMemo, type ReactNode } from "react";
-import { usePathname } from "next/navigation";
-import AuthGuard from "@/components/AuthGuard";
-import DashboardShell from "@/components/dashboard/DashboardShell";
-import type { Role } from "@/lib/types";
+// Dashboard pages read the session on the client (AuthGuard), so navigation
+// into this area is allowed to block. `instant` must live in a Server Component.
+export const instant = false;
 
-/**
- * Guards every /dashboard/* route and frames it with the role-aware sidebar.
- * The URL decides which roles are allowed, so an owner cannot open the admin area.
- */
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
-
-  const allow = useMemo<Role[] | undefined>(() => {
-    if (pathname.startsWith("/dashboard/admin")) return ["admin"];
-    if (pathname.startsWith("/dashboard/owner")) return ["owner"];
-    if (pathname.startsWith("/dashboard/customer")) return ["customer"];
-    return undefined;
-  }, [pathname]);
-
-  return (
-    <Suspense
-      fallback={
-        <div className="grid min-h-[70vh] place-items-center">
-          <span className="ui-loading ui-loading-spinner ui-loading-lg text-primary" />
-        </div>
-      }
-    >
-      <AuthGuard allow={allow}>
-        <DashboardShell>{children}</DashboardShell>
-      </AuthGuard>
-    </Suspense>
-  );
+  return <DashboardFrame>{children}</DashboardFrame>;
 }

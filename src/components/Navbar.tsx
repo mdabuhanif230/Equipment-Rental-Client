@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { LayoutDashboard, LogOut, Menu, Moon, Sun, UserRound, X } from "lucide-react";
 import toast from "react-hot-toast";
 import Logo from "@/components/Logo";
+import UserAvatar from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
@@ -75,9 +76,9 @@ export default function Navbar() {
     <Link
       key={href}
       href={href}
-      className={`px-3 py-2 text-sm font-semibold transition-colors ${
+      className={`relative px-3 py-2 text-sm font-semibold transition-colors after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-gradient-to-r after:from-primary after:to-accent after:transition-transform after:duration-300 ${
         isActive(href)
-          ? "text-primary"
+          ? "text-primary after:scale-x-100"
           : "opacity-75 hover:text-primary hover:opacity-100"
       }`}
     >
@@ -131,14 +132,12 @@ export default function Navbar() {
                 aria-expanded={menuOpen}
               >
                 <span className="ui-avatar size-8">
-                  <span className="ring-primary ring-offset-base-100 grid w-full place-items-center rounded-full ring-2 ring-offset-1 text-xs font-bold uppercase text-primary">
-                    {user.photoURL ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={user.photoURL} alt={user.name} className="rounded-full" />
-                    ) : (
-                      user.name.charAt(0)
-                    )}
-                  </span>
+                  <UserAvatar
+                    name={user.name}
+                    photoURL={user.photoURL}
+                    className="ring-primary ring-offset-base-100 grid w-full place-items-center rounded-full ring-2 ring-offset-1 text-xs font-bold uppercase text-primary"
+                    imgClassName="size-full rounded-full object-cover"
+                  />
                 </span>
                 <span className="hidden max-w-28 truncate text-sm font-semibold sm:block">
                   {user.name}

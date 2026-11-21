@@ -23,10 +23,7 @@ export default function SectionHeading({
   const Heading = level;
   return (
     <Reveal className={`flex flex-col gap-4 ${centered ? "items-center text-center" : "items-start"}`}>
-      <span className="eyebrow">
-        <span className="bg-primary size-1.5 rounded-full" />
-        {eyebrow}
-      </span>
+      <span className="eyebrow">{eyebrow}</span>
       <Heading className="section-title max-w-3xl">{title}</Heading>
       {subtitle && <p className="section-subtitle">{subtitle}</p>}
       {children}

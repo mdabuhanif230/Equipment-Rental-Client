@@ -40,6 +40,7 @@ interface AuthContextValue {
   loginWithGoogle: (idToken: string, signupRole?: Exclude<Role, "admin">) => Promise<User>;
   logout: () => Promise<void>;
   updateProfile: (input: ProfileUpdate) => Promise<User>;
+  refreshUser: () => Promise<User>;
   hasRole: (...roles: Role[]) => boolean;
 }
 
@@ -162,21 +163,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
     );
     let authenticatedUser = await loadAuthenticatedUser("Welcome back, {name}!");
-    if (!authenticatedUser.photoURL) {
-      const photoURL = getGoogleProfilePhoto(idToken);
-      if (photoURL) {
-        try {
-          const result = await api.patch<{ user: User }>("/users/me", { photoURL });
-          authenticatedUser = result.user;
-          setUser(authenticatedUser);
-          updateUserCache(authenticatedUser);
-        } catch (error) {
-          toast.error(
-            error instanceof Error
-              ? `Signed in, but couldn't save your Google photo: ${error.message}`
-              : "Signed in, but couldn't save your Google photo.",
-          );
-        }
+    const googlePhoto = getGoogleProfilePhoto(idToken);
+    // Gmail sign-in always means the current Gmail picture is shown.
+    const needsGooglePhoto = Boolean(googlePhoto) && googlePhoto !== authenticatedUser.photoURL;
+    if (googlePhoto && needsGooglePhoto) {
+      try {
+        const result = await api.patch<{ user: User }>("/users/me", { photoURL: googlePhoto });
+        authenticatedUser = result.user;
+        setUser(authenticatedUser);
+        updateUserCache(authenticatedUser);
+      } catch (error) {
+        toast.error(
+          error instanceof Error
+            ? `Signed in, but couldn't save your Google photo: ${error.message}`
+            : "Signed in, but couldn't save your Google photo.",
+        );
       }
     }
     return authenticatedUser;
@@ -197,14 +198,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return fresh;
   }, []);
 
+  /** Re-read the saved user from the server so the UI always matches the database. */
+  const refreshUser = useCallback(async (): Promise<User> => {
+    const { user: fresh } = await api.get<{ user: User }>("/users/me");
+    setUser(fresh);
+    updateUserCache(fresh);
+    return fresh;
+  }, []);
+
   const hasRole = useCallback(
     (...roles: Role[]) => (user ? roles.includes(user.role) : false),
     [user],
   );
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, loading, register, login, loginWithGoogle, logout, updateProfile, hasRole }),
-    [user, loading, register, login, loginWithGoogle, logout, updateProfile, hasRole],
+    () => ({ user, loading, register, login, loginWithGoogle, logout, updateProfile, refreshUser, hasRole }),
+    [user, loading, register, login, loginWithGoogle, logout, updateProfile, refreshUser, hasRole],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

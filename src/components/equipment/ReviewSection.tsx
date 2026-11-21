@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { MessageSquare, Star } from "lucide-react";
 import Rating from "@/components/Rating";
 import EmptyState from "@/components/EmptyState";
+import UserAvatar from "@/components/UserAvatar";
 import { api } from "@/lib/api";
 import { formatDistanceToNow } from "@/lib/format";
 import { useAuth } from "@/context/AuthContext";
@@ -123,9 +124,12 @@ export default function ReviewSection({ equipmentId }: ReviewSectionProps) {
               </div>
               <p className="text-sm leading-relaxed opacity-80">{review.comment}</p>
               <div className="mt-auto flex items-center gap-3 border-base-content/10 pt-3 border-t">
-                <span className="bg-primary/15 text-primary grid size-9 place-items-center rounded-full text-xs font-bold uppercase">
-                  {review.userName?.charAt(0) || "?"}
-                </span>
+                <UserAvatar
+                  name={review.userName || "?"}
+                  photoURL={review.userPhoto}
+                  className="bg-primary/15 text-primary grid size-9 shrink-0 place-items-center rounded-full text-xs font-bold uppercase"
+                  imgClassName="size-9 rounded-full object-cover"
+                />
                 <span className="text-sm font-bold">{review.userName}</span>
               </div>
             </li>
