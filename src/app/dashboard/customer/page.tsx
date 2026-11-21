@@ -71,7 +71,7 @@ export default function CustomerDashboardPage() {
         title={`Welcome back, ${user?.name?.split(" ")[0] ?? "there"}`}
         subtitle="Your rentals, favorites and spending at a glance."
         actions={
-          <Link href="/all-equipment" className="btn btn-primary btn-sm font-semibold">
+          <Link href="/all-equipment" className="ui-button ui-button-primary ui-button-sm font-semibold">
             Rent something new
           </Link>
         }
@@ -93,7 +93,7 @@ export default function CustomerDashboardPage() {
         <section>
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-lg font-extrabold">Recent bookings</h2>
-            <Link href="/dashboard/customer/bookings" className="btn btn-ghost btn-xs font-semibold">
+            <Link href="/dashboard/customer/bookings" className="ui-button ui-button-ghost ui-button-xs font-semibold">
               View all →
             </Link>
           </div>
@@ -103,7 +103,7 @@ export default function CustomerDashboardPage() {
           ) : recent.length === 0 ? (
             <div className="card-surface p-8 text-center">
               <p className="text-sm opacity-70">You have not rented anything yet.</p>
-              <Link href="/all-equipment" className="btn btn-primary btn-sm mt-4">
+              <Link href="/all-equipment" className="ui-button ui-button-primary ui-button-sm mt-4">
                 Browse equipment
               </Link>
             </div>
