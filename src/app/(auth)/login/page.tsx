@@ -46,16 +46,17 @@ function LoginInner() {
 
   return (
     <AuthShell
+      mode="login"
       eyebrow="Welcome back"
-      title={<>Sign in to your account</>}
-      subtitle="Access your bookings, favorites and dashboard — your session survives page reloads."
+      title={<>Welcome Back!</>}
+      subtitle="Sign in to continue with RentGear."
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <label className="form-control">
-          <div className="label py-1">
-            <span className="label-text font-semibold">Email address</span>
+        <label className="ui-form-control">
+          <div className="ui-label py-1">
+            <span className="ui-label-text font-semibold">Email address</span>
           </div>
-          <label className="input input-bordered flex items-center gap-2 focus-within:outline-primary">
+          <label className="ui-input ui-input-bordered flex items-center gap-2 focus-within:outline-primary">
             <Mail className="size-4 opacity-60" />
             <input
               type="email"
@@ -70,11 +71,11 @@ function LoginInner() {
           </label>
         </label>
 
-        <label className="form-control">
-          <div className="label py-1">
-            <span className="label-text font-semibold">Password</span>
+        <label className="ui-form-control">
+          <div className="ui-label py-1">
+            <span className="ui-label-text font-semibold">Password</span>
           </div>
-          <label className="input input-bordered flex items-center gap-2 focus-within:outline-primary">
+          <label className="ui-input ui-input-bordered flex items-center gap-2 focus-within:outline-primary">
             <LockKeyhole className="size-4 opacity-60" />
             <input
               type={showPassword ? "text" : "password"}
@@ -90,7 +91,7 @@ function LoginInner() {
               type="button"
               tabIndex={-1}
               onClick={() => setShowPassword((s) => !s)}
-              className="btn btn-ghost btn-xs btn-circle"
+              className="ui-button ui-button-ghost ui-button-xs ui-button-circle"
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -98,11 +99,11 @@ function LoginInner() {
           </label>
         </label>
 
-        <button type="submit" className="btn btn-primary mt-2 w-full font-bold" disabled={submitting}>
-          {submitting ? <span className="loading loading-spinner loading-sm" /> : "Sign In"}
+        <button type="submit" className="ui-button ui-button-primary mt-2 w-full font-bold" disabled={submitting}>
+          {submitting ? <span className="ui-loading ui-loading-spinner ui-loading-sm" /> : "Login"}
         </button>
 
-        <div className="divider my-1 text-xs opacity-60">OR CONTINUE WITH</div>
+        <div className="ui-divider my-1 text-xs opacity-60">OR CONTINUE WITH</div>
 
         <GoogleLoginButton />
 
@@ -122,7 +123,7 @@ export default function LoginPage() {
     <Suspense
       fallback={
         <div className="grid min-h-[70vh] place-items-center">
-          <span className="loading loading-spinner loading-lg text-primary" />
+          <span className="ui-loading ui-loading-spinner ui-loading-lg text-primary" />
         </div>
       }
     >
