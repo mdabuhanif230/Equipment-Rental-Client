@@ -42,7 +42,7 @@ export default function AuthGuard({
     return (
       <div className="grid min-h-[70vh] place-items-center">
         <div className="flex flex-col items-center gap-4">
-          <span className="loading loading-spinner loading-lg text-primary" />
+          <span className="ui-loading ui-loading-spinner ui-loading-lg text-primary" />
           <p className="text-sm font-medium opacity-60">Checking your session…</p>
         </div>
       </div>
