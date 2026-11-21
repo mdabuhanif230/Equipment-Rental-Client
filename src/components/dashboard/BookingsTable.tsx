@@ -20,7 +20,7 @@ interface BookingsTableProps {
 const HEADERS: Record<Variant, string[]> = {
   customer: ["Equipment", "Rental period", "Qty", "Total", "Status", "Payment", "Actions"],
   owner: ["Customer", "Equipment", "Rental period", "Total", "Status", "Payment", "Actions"],
-  admin: ["Booking", "Customer", "Equipment", "Rental period", "Total", "Status", "Payment"],
+  admin: ["Booking", "Customer", "Equipment", "Rental period", "Total", "Status", "Payment", "Actions"],
 };
 
 /** Bookings table with the exact columns each role needs (assignment spec). */
@@ -41,7 +41,7 @@ export default function BookingsTable({
 
   return (
     <div className="table-surface scroll-thin overflow-x-auto">
-      <table className="table table-sm">
+      <table className="ui-table ui-table-sm">
         <thead>
           <tr className="bg-base-200 text-xs uppercase tracking-wide">
             {HEADERS[variant].map((h) => (
@@ -70,7 +70,7 @@ export default function BookingsTable({
                       {unpaid && onPay && (
                         <button
                           type="button"
-                          className="btn btn-primary btn-xs gap-1"
+                          className="ui-button ui-button-primary ui-button-xs gap-1"
                           disabled={busyId === b._id}
                           onClick={() => onPay(b._id)}
                         >
@@ -80,7 +80,7 @@ export default function BookingsTable({
                       {unpaid && onCancel && (
                         <button
                           type="button"
-                          className="btn btn-outline btn-error btn-xs gap-1"
+                          className="ui-button ui-button-outline ui-button-error ui-button-xs gap-1"
                           disabled={busyId === b._id}
                           onClick={() => onCancel(b._id)}
                         >
@@ -88,7 +88,7 @@ export default function BookingsTable({
                         </button>
                       )}
                       {!unpaid && (
-                        <Link href={`/equipment/${b.equipmentId}`} className="btn btn-ghost btn-xs">
+                        <Link href={`/equipment/${b.equipmentId}`} className="ui-button ui-button-ghost ui-button-xs">
                           View
                         </Link>
                       )}
@@ -118,7 +118,7 @@ export default function BookingsTable({
                     {completable && onComplete ? (
                       <button
                         type="button"
-                        className="btn btn-success btn-xs gap-1 text-success-content"
+                        className="ui-button ui-button-success ui-button-xs gap-1 text-success-content"
                         disabled={busyId === b._id}
                         onClick={() => onComplete(b._id)}
                       >
@@ -144,6 +144,29 @@ export default function BookingsTable({
                 <td className="font-black">{formatCurrency(b.totalAmount)}</td>
                 <td><StatusBadge status={b.status} /></td>
                 <td><PaymentBadge status={b.paymentStatus} /></td>
+                <td>
+                  {unpaid && onCancel ? (
+                    <button
+                      type="button"
+                      className="ui-button ui-button-outline ui-button-error ui-button-xs gap-1"
+                      disabled={busyId === b._id}
+                      onClick={() => onCancel(b._id)}
+                    >
+                      <XCircle className="size-3.5" /> Cancel
+                    </button>
+                  ) : b.status === "confirmed" && b.paymentStatus === "paid" && onComplete ? (
+                    <button
+                      type="button"
+                      className="ui-button ui-button-success ui-button-xs gap-1 text-success-content"
+                      disabled={busyId === b._id}
+                      onClick={() => onComplete(b._id)}
+                    >
+                      <CheckCircle2 className="size-3.5" /> Complete
+                    </button>
+                  ) : (
+                    <span className="text-xs opacity-50">—</span>
+                  )}
+                </td>
               </tr>
             );
           })}
