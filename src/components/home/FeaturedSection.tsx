@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 import EquipmentCard from "@/components/EquipmentCard";
+import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
 import type { Equipment } from "@/lib/types";
 
@@ -42,9 +43,9 @@ export default function FeaturedSection() {
           }
           subtitle="The six most recent listings approved by our admins — ready to book today."
         >
-          <Link href="/all-equipment" className="btn btn-outline btn-sm gap-2 mt-1 px-5 font-semibold">
-            View all equipment <ArrowRight className="size-4" />
-          </Link>
+          <Button asChild variant="outline" size="sm" className="mt-1 gap-2 px-5">
+            <Link href="/all-equipment">View all equipment <ArrowRight className="size-4" /></Link>
+          </Button>
         </SectionHeading>
 
         <div className="mt-12">
