@@ -28,7 +28,7 @@ const FAQS = [
   },
   {
     q: "How do I become an owner?",
-    a: "Register normally (you start as a customer) and ask an administrator to switch your role to owner — the admin dashboard does it in one click.",
+    a: "Choose Equipment owner when you sign up. If you already have a customer account, ask an administrator to switch your role to owner.",
   },
 ];
 
@@ -92,7 +92,7 @@ export default function ContactPage() {
 
               <Reveal delay={0.3}>
                 <div className="rounded-3xl bg-cover bg-center p-6 text-white"
-                  style={{ backgroundImage: "linear-gradient(rgba(4,33,29,.86), rgba(4,33,29,.86)), url(/images/hero.svg)" }}
+                  style={{ backgroundImage: "linear-gradient(rgba(4,33,29,.86), rgba(4,33,29,.86)), url(/images/hero.png)" }}
                 >
                   <p className="flex items-center gap-2 text-sm font-bold">
                     <MessageCircleQuestion className="size-4 text-secondary" /> Prefer chat?
@@ -110,21 +110,21 @@ export default function ContactPage() {
                 <h2 className="text-xl font-extrabold">Send a message</h2>
 
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <label className="form-control">
-                    <span className="label py-1 text-xs font-semibold opacity-70">Your name *</span>
+                  <label className="ui-form-control">
+                    <span className="ui-label py-1 text-xs font-semibold opacity-70">Your name *</span>
                     <input
-                      className="input input-bordered input-sm"
+                      className="ui-input ui-input-bordered ui-input-sm"
                       value={form.name}
                       onChange={set("name")}
                       required
                       maxLength={80}
                     />
                   </label>
-                  <label className="form-control">
-                    <span className="label py-1 text-xs font-semibold opacity-70">Email *</span>
+                  <label className="ui-form-control">
+                    <span className="ui-label py-1 text-xs font-semibold opacity-70">Email *</span>
                     <input
                       type="email"
-                      className="input input-bordered input-sm"
+                      className="ui-input ui-input-bordered ui-input-sm"
                       value={form.email}
                       onChange={set("email")}
                       required
@@ -132,10 +132,10 @@ export default function ContactPage() {
                   </label>
                 </div>
 
-                <label className="form-control">
-                  <span className="label py-1 text-xs font-semibold opacity-70">Subject</span>
+                <label className="ui-form-control">
+                  <span className="ui-label py-1 text-xs font-semibold opacity-70">Subject</span>
                   <input
-                    className="input input-bordered input-sm"
+                    className="ui-input ui-input-bordered ui-input-sm"
                     value={form.subject}
                     onChange={set("subject")}
                     maxLength={120}
@@ -143,10 +143,10 @@ export default function ContactPage() {
                   />
                 </label>
 
-                <label className="form-control">
-                  <span className="label py-1 text-xs font-semibold opacity-70">Message *</span>
+                <label className="ui-form-control">
+                  <span className="ui-label py-1 text-xs font-semibold opacity-70">Message *</span>
                   <textarea
-                    className="textarea textarea-bordered w-full"
+                    className="ui-textarea ui-textarea-bordered w-full"
                     rows={5}
                     value={form.message}
                     onChange={set("message")}
@@ -156,7 +156,7 @@ export default function ContactPage() {
                   />
                 </label>
 
-                <button type="submit" className="btn btn-primary gap-2 self-start px-6 font-bold">
+                <button type="submit" className="ui-button ui-button-primary gap-2 self-start px-6 font-bold">
                   <Send className="size-4" /> Send message
                 </button>
                 <p className="text-xs opacity-55">
@@ -178,10 +178,10 @@ export default function ContactPage() {
 
           <div className="mt-10 flex flex-col gap-3">
             {FAQS.map((item) => (
-              <div key={item.q} className="collapse collapse-arrow bg-base-100 border-base-content/10 border">
+              <div key={item.q} className="ui-collapse ui-collapse-arrow bg-base-100 border-base-content/10 border">
                 <input type="radio" name="faq" defaultChecked aria-label={item.q} />
-                <div className="collapse-title text-sm font-bold">{item.q}</div>
-                <div className="collapse-content text-sm opacity-75">
+                <div className="ui-collapse-title text-sm font-bold">{item.q}</div>
+                <div className="ui-collapse-content text-sm opacity-75">
                   <p>{item.a}</p>
                 </div>
               </div>
