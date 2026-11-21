@@ -12,10 +12,10 @@ export default function NotFound() {
           back to renting great equipment.
         </p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <Link href="/" className="btn btn-primary gap-2 px-6">
+          <Link href="/" className="ui-button ui-button-primary gap-2 px-6">
             <Home className="size-4" /> Go Home
           </Link>
-          <Link href="/all-equipment" className="btn btn-outline gap-2 px-6">
+          <Link href="/all-equipment" className="ui-button ui-button-outline gap-2 px-6">
             <Compass className="size-4" /> Browse Equipment
           </Link>
         </div>
