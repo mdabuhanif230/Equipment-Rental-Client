@@ -15,6 +15,7 @@ function ProfileInner() {
   // AuthGuard only renders this once the session resolved, so seeding from `user` is safe
   const [form, setForm] = useState(() => ({
     name: user?.name || "",
+    email: user?.email || "",
     photoURL: user?.photoURL || "",
     phone: user?.phone || "",
     address: user?.address || "",
@@ -27,6 +28,7 @@ function ProfileInner() {
 
   const dirty =
     form.name !== (user.name || "") ||
+    form.email.toLowerCase() !== (user.email || "").toLowerCase() ||
     form.photoURL !== (user.photoURL || "") ||
     form.phone !== (user.phone || "") ||
     form.address !== (user.address || "");
@@ -37,10 +39,15 @@ function ProfileInner() {
       toast.error("Name cannot be empty.");
       return;
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      toast.error("Enter a valid email address.");
+      return;
+    }
     setSaving(true);
     try {
       await updateProfile({
         name: form.name.trim(),
+        email: form.email.trim().toLowerCase(),
         photoURL: form.photoURL.trim(),
         phone: form.phone.trim(),
         address: form.address.trim(),
@@ -141,7 +148,7 @@ function ProfileInner() {
           </span>
           <div>
             <p className="text-lg font-extrabold">{user.name}</p>
-            <p className="truncate text-sm opacity-65">{user.email}</p>
+            <p className="truncate text-sm opacity-65">{form.email || user.email}</p>
           </div>
           <div className="flex flex-wrap justify-center gap-2">
             <span className="ui-badge ui-badge-primary ui-badge-sm capitalize">{user.role}</span>
@@ -175,12 +182,19 @@ function ProfileInner() {
 
             <label className="ui-form-control">
               <span className="ui-label py-1 text-xs font-semibold opacity-70">Email address</span>
-              <label className={`${field} cursor-not-allowed opacity-70`}>
+              <label className={field}>
                 <Mail className="size-4 opacity-60" />
-                <input className="grow" value={user.email} readOnly disabled aria-readonly />
+                <input
+                  className="grow"
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                  required
+                  maxLength={120}
+                />
               </label>
               <span className="ui-label-text-alt text-xs opacity-55">
-                Email cannot be changed after registration.
+                Your sign-in address will be updated as well.
               </span>
             </label>
 

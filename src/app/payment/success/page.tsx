@@ -126,6 +126,14 @@ function PaymentSuccessInner() {
                   <dt className="opacity-60">Booking ID</dt>
                   <dd className="font-mono text-xs opacity-70">{booking._id}</dd>
                 </div>
+                {booking.transactionId && (
+                  <div className="flex items-center justify-between gap-4">
+                    <dt className="opacity-60">Transaction ID</dt>
+                    <dd className="max-w-56 truncate font-mono text-xs opacity-70">
+                      {booking.transactionId}
+                    </dd>
+                  </div>
+                )}
               </dl>
             ) : loading ? (
               <div className="flex flex-col items-center gap-3 py-4">

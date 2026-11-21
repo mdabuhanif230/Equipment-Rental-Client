@@ -178,7 +178,7 @@ export default function Navbar() {
                 <Link href="/login">Login</Link>
               </Button>
               <Button asChild size="sm">
-                <Link href="/register">Get Started</Link>
+                <Link href="/register">Register</Link>
               </Button>
             </div>
           )}

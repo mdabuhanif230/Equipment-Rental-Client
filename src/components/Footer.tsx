@@ -55,6 +55,24 @@ export default function Footer() {
               <Phone className="size-4 shrink-0" /> +880 1700-000000
             </a>
           </div>
+
+          <div className="mt-6">
+            <p className="text-xs font-semibold tracking-wide opacity-60 uppercase">Follow us</p>
+            <div className="mt-3 flex items-center gap-2">
+              <a
+                href="https://x.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="RentGear on X"
+                className="grid size-9 place-items-center rounded-full border border-primary-foreground/20 transition hover:bg-primary-foreground/10 hover:text-white"
+              >
+                {/* Current X brand mark (not the retired Twitter bird) */}
+                <svg viewBox="0 0 24 24" className="size-4 fill-current" aria-hidden="true">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+              </a>
+            </div>
+          </div>
         </div>
 
         {columns.map((col) => (

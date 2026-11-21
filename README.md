@@ -14,6 +14,7 @@
 ### Public
 - **Animated home page** — hero banner with live search, 6 featured listings, category tiles, "why choose us", "how it works", a community review wall (≥4 reviews) and an owner recruitment band, all animated with Framer Motion.
 - **All Equipment** — server-side search, location, category, rental-type, price-range and availability filters plus sorting (newest / price asc / price desc) and windowed pagination. Every filter lives in the URL, so filtered views are shareable and refresh-safe.
+- **Footer** — contact details and a social link using the current X brand mark (not the retired Twitter bird).
 - **Equipment details** — gallery, spec sheet, rental terms, reviews with a star summary, and a live availability/price calculator.
 
 ### Customers (private)
@@ -48,7 +49,7 @@
 | --- | --- |
 | Framework | `next` 16 (App Router, Turbopack, Cache Components, React Compiler), `react` 19, `react-dom` 19 |
 | Language | TypeScript |
-| Styling | `tailwindcss` 4, `daisyui` 5 |
+| Styling | `tailwindcss` 4 with custom design tokens + shadcn-style UI primitives (`components/ui`) |
 | Animation | `framer-motion` |
 | Charts | `recharts` |
 | Icons | `lucide-react` |
@@ -108,8 +109,9 @@ npm run lint    # ESLint 9 (next lint was removed in Next 16)
 | `/equipment/[id]` | private | Details, favorites, booking modal, reviews |
 | `/login`, `/register` | public | Auth (Google login included) |
 | `/payment/success`, `/payment/cancel` | private | Stripe return pages with server-side verification |
-| `/dashboard/customer`, `/bookings`, `/favorites` | customer | Customer dashboard |
-| `/dashboard/owner`, `/equipment`, `/bookings` | owner | Owner dashboard + listing CRUD |
+| `/dashboard` | all roles | Redirects each role to its own overview (also the Google sign-in callback target) |
+| `/dashboard/customer`, `/bookings`, `/favorites` | customer | Customer dashboard, rentals and favorites |
+| `/dashboard/owner`, `/add-equipment`, `/equipment`, `/bookings` | owner | Owner dashboard + listing CRUD |
 | `/dashboard/admin`, `/users`, `/equipment`, `/bookings` | admin | Admin dashboard + moderation |
 | `/profile` | all roles | Name, email, photo, phone, address |
 | `/about`, `/contact` | public | Company info, contact form, FAQ |

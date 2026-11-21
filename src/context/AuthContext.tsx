@@ -30,7 +30,7 @@ interface RegisterInput {
   role: Exclude<Role, "admin">;
 }
 
-type ProfileUpdate = Partial<Pick<User, "name" | "photoURL" | "phone" | "address">>;
+type ProfileUpdate = Partial<Pick<User, "name" | "email" | "photoURL" | "phone" | "address">>;
 
 interface AuthContextValue {
   user: User | null;

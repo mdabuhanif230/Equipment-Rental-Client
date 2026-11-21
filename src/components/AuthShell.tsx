@@ -62,6 +62,7 @@ export default function AuthShell({ mode, eyebrow, title, subtitle, children }: 
           <section className={`relative z-10 flex items-center ${isLogin ? "px-6 py-7 sm:px-8 lg:px-9 lg:py-8" : "px-5 py-9 sm:px-10 sm:py-11 lg:px-12 lg:py-12"}`}>
             <div className={`mx-auto w-full ${isLogin ? "max-w-[24rem]" : "max-w-[27rem]"}`}>
               <div className="mb-6">
+                <p className="eyebrow mb-2">{eyebrow}</p>
                 <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-[1.75rem]">{title}</h1>
                 <p className="mt-1.5 text-sm leading-6 text-slate-500">{subtitle}</p>
               </div>

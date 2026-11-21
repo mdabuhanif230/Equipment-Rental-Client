@@ -9,6 +9,7 @@ import {
   Building2,
   CalendarDays,
   Heart,
+  Mail,
   MapPin,
   PackageOpen,
   PencilRuler,
@@ -207,6 +208,35 @@ function EquipmentDetails({ id }: { id: string }) {
                     <p className="mt-1.5 truncate text-sm font-bold capitalize">{spec.value}</p>
                   </div>
                 ))}
+              </div>
+
+              <div className="bg-base-200/70 mt-6 rounded-2xl p-4">
+                <h2 className="text-base font-bold">Owner information</h2>
+                <div className="mt-3 flex items-center gap-3">
+                  {item.ownerPhoto ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={item.ownerPhoto}
+                      alt={item.ownerName}
+                      className="size-11 shrink-0 rounded-full object-cover"
+                    />
+                  ) : (
+                    <span className="bg-primary/15 text-primary grid size-11 shrink-0 place-items-center rounded-full font-black uppercase">
+                      {(item.ownerName || "O").charAt(0)}
+                    </span>
+                  )}
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-bold">{item.ownerName}</p>
+                    {item.ownerEmail && (
+                      <p className="flex items-center gap-1.5 truncate text-xs opacity-65">
+                        <Mail className="size-3.5 shrink-0" /> {item.ownerEmail}
+                      </p>
+                    )}
+                    <p className="mt-1 flex items-center gap-1.5 text-xs opacity-55">
+                      <ShieldCheck className="size-3.5 shrink-0 text-primary" /> Verified equipment owner
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {item.rentalTerms && (
