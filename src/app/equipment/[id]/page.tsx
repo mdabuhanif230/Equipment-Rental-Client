@@ -56,7 +56,7 @@ function EquipmentDetails({ id }: { id: string }) {
 
   // Favorite state for the signed-in customer
   useEffect(() => {
-    if (!user) return;
+    if (user?.role !== "customer") return;
     let active = true;
     api
       .get<{ ids: string[] }>("/favorites/ids")
@@ -108,7 +108,7 @@ function EquipmentDetails({ id }: { id: string }) {
           <PackageOpen className="text-primary mx-auto size-12" />
           <h1 className="mt-4 text-xl font-extrabold">Equipment unavailable</h1>
           <p className="mt-2 text-sm opacity-70">{error || "This listing could not be loaded."}</p>
-          <Link href="/all-equipment" className="btn btn-primary btn-sm mt-5">
+          <Link href="/all-equipment" className="ui-button ui-button-primary ui-button-sm mt-5">
             Browse other equipment
           </Link>
         </div>
@@ -157,15 +157,15 @@ function EquipmentDetails({ id }: { id: string }) {
                   className="object-cover"
                 />
               ) : (
-                // eslint-disable-next-line @next/next/no-img-element -- local SVG fallback
-                <img src="/images/placeholder.svg" alt={item.name} className="h-full w-full object-cover" />
+                // eslint-disable-next-line @next/next/no-img-element -- local PNG fallback
+                <img src="/images/placeholder.png" alt={item.name} className="h-full w-full object-cover" />
               )}
-              <span className="badge badge-primary absolute top-4 left-4 font-semibold text-primary-content">
+              <span className="ui-badge ui-badge-primary absolute top-4 left-4 font-semibold text-primary-content">
                 {item.category}
               </span>
               <span
-                className={`badge absolute top-4 right-4 font-bold ${
-                  item.quantity > 0 ? "badge-success" : "badge-error"
+                className={`ui-badge absolute top-4 right-4 font-bold ${
+                  item.quantity > 0 ? "ui-badge-success" : "ui-badge-error"
                 }`}
               >
                 {item.quantity > 0 ? `${item.quantity} in stock` : "Out of stock"}
@@ -180,18 +180,20 @@ function EquipmentDetails({ id }: { id: string }) {
                     <MapPin className="size-4" /> {item.location} · Listed by {item.ownerName}
                   </p>
                 </div>
-                <button
-                  type="button"
-                  onClick={toggleFavorite}
-                  disabled={toggling}
-                  className={`btn btn-sm gap-2 ${
-                    isFavorite ? "btn-error text-error-content" : "btn-outline"
-                  }`}
-                  aria-pressed={isFavorite}
-                >
-                  <Heart className={`size-4 ${isFavorite ? "fill-current" : ""}`} />
-                  {isFavorite ? "Saved" : "Add to favorites"}
-                </button>
+                {user?.role === "customer" && (
+                  <button
+                    type="button"
+                    onClick={toggleFavorite}
+                    disabled={toggling}
+                    className={`ui-button ui-button-sm gap-2 ${
+                      isFavorite ? "ui-button-error text-error-content" : "ui-button-outline"
+                    }`}
+                    aria-pressed={isFavorite}
+                  >
+                    <Heart className={`size-4 ${isFavorite ? "fill-current" : ""}`} />
+                    {isFavorite ? "Saved" : "Add to favorites"}
+                  </button>
+                )}
               </div>
 
               <p className="mt-5 leading-relaxed opacity-80">{item.description}</p>
@@ -241,8 +243,8 @@ function EquipmentDetails({ id }: { id: string }) {
             </p>
             <p className="mt-2 flex items-center justify-between gap-2">
               <span className="opacity-60">Listing status</span>
-              <span className={`badge badge-sm capitalize ${
-                item.status === "approved" ? "badge-success" : "badge-warning"
+              <span className={`ui-badge ui-badge-sm capitalize ${
+                item.status === "approved" ? "ui-badge-success" : "ui-badge-warning"
               }`}>
                 {item.status}
               </span>
@@ -253,16 +255,20 @@ function EquipmentDetails({ id }: { id: string }) {
             </p>
           </div>
 
-          <button
-            type="button"
-            className="btn btn-primary w-full font-bold"
-            onClick={() => setBookingOpen(true)}
-            disabled={item.quantity < 1}
-          >
-            {item.quantity < 1 ? "Currently unavailable" : "Book this equipment"}
-          </button>
+          {user?.role === "customer" ? (
+            <button
+              type="button"
+              className="ui-button ui-button-primary w-full font-bold"
+              onClick={() => setBookingOpen(true)}
+              disabled={item.quantity < 1}
+            >
+              {item.quantity < 1 ? "Currently unavailable" : "Book this equipment"}
+            </button>
+          ) : (
+            <p className="rounded-xl bg-base-200 p-3 text-center text-sm opacity-70">Customer accounts can book equipment.</p>
+          )}
 
-          <Link href="#reviews" className="btn btn-outline btn-sm w-full">
+          <Link href="#reviews" className="ui-button ui-button-outline ui-button-sm w-full">
             Read reviews
           </Link>
 
@@ -292,7 +298,7 @@ export default function EquipmentDetailsPage({
     <Suspense
       fallback={
         <div className="grid min-h-[70vh] place-items-center">
-          <span className="loading loading-spinner loading-lg text-primary" />
+          <span className="ui-loading ui-loading-spinner ui-loading-lg text-primary" />
         </div>
       }
     >
