@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Banknote, ChartNoAxesColumnIncreasing, Timer } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import { Button } from "@/components/ui/button";
 
 const bullets = [
   { icon: Banknote, title: "Zero listing fee", body: "Publish unlimited equipment and only share a cut after a completed rental." },
@@ -18,7 +19,7 @@ export default function OwnerCTA() {
             <div
               aria-hidden
               className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url(/images/owners.svg)" }}
+              style={{ backgroundImage: "url(/images/owners.png)" }}
             />
             <div className="hero-overlay absolute inset-0" />
 
@@ -34,15 +35,17 @@ export default function OwnerCTA() {
                 </p>
 
                 <div className="mt-7 flex flex-wrap gap-3">
-                  <Link href="/register" className="btn btn-secondary px-6 font-bold text-secondary-content">
-                    Become an owner
-                  </Link>
-                  <Link
-                    href="/all-equipment"
-                    className="btn btn-outline border-white/40 px-6 font-bold text-white hover:border-white hover:bg-white hover:text-base-100"
+                  <Button asChild variant="secondary" size="lg">
+                    <Link href="/register">Become an owner</Link>
+                  </Button>
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="lg"
+                    className="border-white/40 bg-transparent text-white hover:border-white hover:bg-white hover:text-foreground"
                   >
-                    See what rents out
-                  </Link>
+                    <Link href="/all-equipment">See what rents out</Link>
+                  </Button>
                 </div>
               </div>
 
