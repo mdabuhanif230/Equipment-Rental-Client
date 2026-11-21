@@ -64,7 +64,7 @@ export default function AdminUsersPage() {
       />
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <label className="input input-bordered input-sm flex min-w-56 flex-1 items-center gap-2">
+        <label className="ui-input ui-input-bordered ui-input-sm flex min-w-56 flex-1 items-center gap-2">
           <Search className="size-4 opacity-60" />
           <input
             type="search"
@@ -82,7 +82,7 @@ export default function AdminUsersPage() {
         </label>
         <button
           type="button"
-          className="btn btn-primary btn-sm font-semibold"
+          className="ui-button ui-button-primary ui-button-sm font-semibold"
           onClick={() => {
             setPage(1);
             setAppliedSearch(search.trim());
@@ -92,7 +92,7 @@ export default function AdminUsersPage() {
         </button>
 
         <select
-          className="select select-bordered select-sm"
+          className="ui-select ui-select-bordered ui-select-sm"
           value={role}
           onChange={(e) => {
             setPage(1);
@@ -119,7 +119,7 @@ export default function AdminUsersPage() {
       ) : (
         <>
           <div className="table-surface scroll-thin overflow-x-auto">
-            <table className="table table-sm">
+            <table className="ui-table ui-table-sm">
               <thead>
                 <tr className="bg-base-200 text-xs uppercase tracking-wide">
                   <th>User</th>
@@ -137,7 +137,7 @@ export default function AdminUsersPage() {
                       <p className="flex items-center gap-2 font-bold">
                         {u.name}
                         {me && u._id === me._id && (
-                          <span className="badge badge-ghost badge-xs">you</span>
+                          <span className="ui-badge ui-badge-ghost ui-badge-xs">you</span>
                         )}
                       </p>
                       <p className="truncate text-xs opacity-55">{u.email}</p>
@@ -145,7 +145,7 @@ export default function AdminUsersPage() {
                     <td><RoleBadge role={u.role} /></td>
                     <td>
                       <select
-                        className="select select-bordered select-xs"
+                        className="ui-select ui-select-bordered ui-select-xs"
                         value={u.role}
                         disabled={busyId === u._id || (me ? u._id === me._id : false)}
                         onChange={(e) => changeRole(u._id, e.target.value as Role)}
