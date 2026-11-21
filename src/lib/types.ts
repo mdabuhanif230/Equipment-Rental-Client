@@ -101,11 +101,6 @@ export interface Paginated<T> {
   pages: number;
 }
 
-export interface AuthResponse {
-  token: string;
-  user: User;
-}
-
 /* ---------------- dashboard analytics ---------------- */
 
 export interface AdminStats {
