@@ -119,11 +119,11 @@ export default function BookingModal({ item, onClose }: BookingModalProps) {
     }
   };
 
-  const field = "input input-bordered input-sm w-full";
+  const field = "ui-input ui-input-bordered ui-input-sm w-full";
 
   return (
-    <div className="modal modal-open" role="dialog" aria-modal="true" aria-label={`Book ${item.name}`}>
-      <div className="modal-box max-h-[92vh] w-11/12 max-w-2xl overflow-y-auto p-6 sm:p-7">
+    <div className="ui-modal ui-modal-open" role="dialog" aria-modal="true" aria-label={`Book ${item.name}`}>
+      <div className="ui-modal-box max-h-[92vh] w-11/12 max-w-2xl overflow-y-auto p-6 sm:p-7">
         <div className="flex items-start justify-between gap-4">
           <div>
             <span className="eyebrow">Booking request</span>
@@ -134,15 +134,15 @@ export default function BookingModal({ item, onClose }: BookingModalProps) {
               {item.quantity} unit(s) listed
             </p>
           </div>
-          <button type="button" className="btn btn-ghost btn-sm btn-circle" onClick={onClose} aria-label="Close">
+          <button type="button" className="ui-button ui-button-ghost ui-button-sm ui-button-circle" onClick={onClose} aria-label="Close">
             ✕
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
           <div className="grid gap-4 sm:grid-cols-3">
-            <label className="form-control">
-              <span className="label py-1 text-xs font-semibold opacity-70">Start date *</span>
+            <label className="ui-form-control">
+              <span className="ui-label py-1 text-xs font-semibold opacity-70">Start date *</span>
               <input
                 type="date"
                 required
@@ -152,8 +152,8 @@ export default function BookingModal({ item, onClose }: BookingModalProps) {
                 onChange={(e) => setForm((f) => ({ ...f, startDate: e.target.value }))}
               />
             </label>
-            <label className="form-control">
-              <span className="label py-1 text-xs font-semibold opacity-70">End date *</span>
+            <label className="ui-form-control">
+              <span className="ui-label py-1 text-xs font-semibold opacity-70">End date *</span>
               <input
                 type="date"
                 required
@@ -163,8 +163,8 @@ export default function BookingModal({ item, onClose }: BookingModalProps) {
                 onChange={(e) => setForm((f) => ({ ...f, endDate: e.target.value }))}
               />
             </label>
-            <label className="form-control">
-              <span className="label py-1 text-xs font-semibold opacity-70">Quantity *</span>
+            <label className="ui-form-control">
+              <span className="ui-label py-1 text-xs font-semibold opacity-70">Quantity *</span>
               <input
                 type="number"
                 required
@@ -180,8 +180,8 @@ export default function BookingModal({ item, onClose }: BookingModalProps) {
           {dateError && <p className="text-error text-xs font-semibold">{dateError}</p>}
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <label className="form-control">
-              <span className="label py-1 text-xs font-semibold opacity-70">Phone number *</span>
+            <label className="ui-form-control">
+              <span className="ui-label py-1 text-xs font-semibold opacity-70">Phone number *</span>
               <input
                 type="tel"
                 required
@@ -191,8 +191,8 @@ export default function BookingModal({ item, onClose }: BookingModalProps) {
                 onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
               />
             </label>
-            <label className="form-control">
-              <span className="label py-1 text-xs font-semibold opacity-70">Delivery address *</span>
+            <label className="ui-form-control">
+              <span className="ui-label py-1 text-xs font-semibold opacity-70">Delivery address *</span>
               <input
                 type="text"
                 required
@@ -204,13 +204,13 @@ export default function BookingModal({ item, onClose }: BookingModalProps) {
             </label>
           </div>
 
-          <label className="form-control">
-            <span className="label py-1 text-xs font-semibold opacity-70">Notes (optional)</span>
+          <label className="ui-form-control">
+            <span className="ui-label py-1 text-xs font-semibold opacity-70">Notes (optional)</span>
             <textarea
               rows={3}
               maxLength={500}
               placeholder="Anything the owner should know…"
-              className="textarea textarea-bordered textarea-sm w-full"
+              className="ui-textarea ui-textarea-bordered ui-textarea-sm w-full"
               value={form.notes}
               onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
             />
@@ -258,17 +258,17 @@ export default function BookingModal({ item, onClose }: BookingModalProps) {
             You can cancel an unpaid booking from your dashboard at any time.
           </p>
 
-          <div className="modal-action mt-0">
-            <button type="button" className="btn btn-ghost" onClick={onClose} disabled={submitting}>
+          <div className="ui-modal-action mt-0">
+            <button type="button" className="ui-button ui-button-ghost" onClick={onClose} disabled={submitting}>
               Cancel
             </button>
             <button
               type="submit"
-              className="btn btn-primary gap-2 font-bold"
+              className="ui-button ui-button-primary gap-2 font-bold"
               disabled={submitting || checking || !!dateError}
             >
               {submitting ? (
-                <span className="loading loading-spinner loading-sm" />
+                <span className="ui-loading ui-loading-spinner ui-loading-sm" />
               ) : (
                 <CreditCard className="size-4" />
               )}
@@ -277,7 +277,7 @@ export default function BookingModal({ item, onClose }: BookingModalProps) {
           </div>
         </form>
       </div>
-      <button type="button" className="modal-backdrop" onClick={onClose} aria-label="Close dialog">
+      <button type="button" className="ui-modal-backdrop" onClick={onClose} aria-label="Close dialog">
         Close
       </button>
     </div>
