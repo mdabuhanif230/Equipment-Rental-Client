@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AtSign, Globe, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
 import Logo from "@/components/Logo";
 
 // Evaluated once at module load so the footer stays prerender-safe
@@ -36,47 +36,35 @@ const columns = [
 
 export default function Footer() {
   return (
-    <footer className="border-base-content/10 border-t bg-base-200">
-      <div className="container-page grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-5">
-        <div className="lg:col-span-2">
-          <Logo />
-          <p className="mt-4 max-w-sm text-sm leading-relaxed opacity-70">
-            The equipment rental platform where customers rent reliable gear and owners earn from
-            the tools they already own — powered by secure Stripe payments.
+    <footer className="bg-primary text-primary-foreground">
+      <div className="container-page grid gap-12 py-14 md:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,1fr)] lg:py-16">
+        <div>
+          <Logo className="text-primary-foreground" />
+          <p className="mt-5 max-w-sm text-sm leading-relaxed text-primary-foreground/75">
+            A better way to find the equipment your project needs — and put the tools you own to
+            work.
           </p>
-          <div className="mt-5 space-y-2 text-sm opacity-80">
+          <div className="mt-6 space-y-3 text-sm text-primary-foreground/80">
             <p className="flex items-center gap-2">
-              <MapPin className="size-4 text-primary" /> Dhaka, Bangladesh
+              <MapPin className="size-4 shrink-0" /> Dhaka, Bangladesh
             </p>
-            <p className="flex items-center gap-2">
-              <Mail className="size-4 text-primary" /> support@rentgear.com
-            </p>
-            <p className="flex items-center gap-2">
-              <Phone className="size-4 text-primary" /> +880 1700-000000
-            </p>
-          </div>
-          <div className="mt-5 flex gap-3">
-            {[Globe, AtSign, MessageCircle, Mail].map((Icon, i) => (
-              <a
-                key={i}
-                href="#"
-                aria-label="social link"
-                className="btn btn-circle btn-ghost btn-sm border border-base-content/10"
-              >
-                <Icon className="size-4" />
-              </a>
-            ))}
+            <a className="flex w-fit items-center gap-2 transition hover:text-white" href="mailto:support@rentgear.com">
+              <Mail className="size-4 shrink-0" /> support@rentgear.com
+            </a>
+            <a className="flex w-fit items-center gap-2 transition hover:text-white" href="tel:+8801700000000">
+              <Phone className="size-4 shrink-0" /> +880 1700-000000
+            </a>
           </div>
         </div>
 
         {columns.map((col) => (
           <div key={col.title}>
-            <h3 className="text-sm font-bold tracking-wide uppercase opacity-60">{col.title}</h3>
-            <ul className="mt-4 space-y-2.5 text-sm">
+            <h3 className="text-sm font-bold tracking-wide text-primary-foreground/60 uppercase">{col.title}</h3>
+            <ul className="mt-4 space-y-3 text-sm">
               {col.links.map((l) => (
                 <li key={l.label}>
-                  <Link href={l.href} className="opacity-75 transition hover:text-primary hover:opacity-100">
-                    {l.label}
+                  <Link href={l.href} className="group inline-flex items-center gap-1 text-primary-foreground/80 transition hover:text-white">
+                    {l.label} <ArrowUpRight className="size-3.5 opacity-0 transition group-hover:opacity-100" />
                   </Link>
                 </li>
               ))}
@@ -85,8 +73,8 @@ export default function Footer() {
         ))}
       </div>
 
-      <div className="border-base-content/10 border-t">
-        <div className="container-page flex flex-col items-center justify-between gap-2 py-5 text-xs opacity-70 sm:flex-row">
+      <div className="border-t border-primary-foreground/15">
+        <div className="container-page flex flex-col items-center justify-between gap-2 py-5 text-xs text-primary-foreground/65 sm:flex-row">
           <p>© {YEAR} RentGear — Equipment Rental Platform. All rights reserved.</p>
           <p>Built with Next.js, Express &amp; Stripe</p>
         </div>
