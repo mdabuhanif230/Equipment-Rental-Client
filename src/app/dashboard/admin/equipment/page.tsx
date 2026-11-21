@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { CheckCircle2, ListChecks, XCircle } from "lucide-react";
+import { CheckCircle2, ListChecks, Pencil, Trash2, XCircle } from "lucide-react";
 import PageHeader from "@/components/dashboard/PageHeader";
 import { EquipmentStatusBadge } from "@/components/dashboard/Badges";
 import EmptyState from "@/components/EmptyState";
 import Pagination from "@/components/Pagination";
+import EquipmentFormModal from "@/components/dashboard/EquipmentFormModal";
 import { api } from "@/lib/api";
 import { formatCurrency, formatShortDate } from "@/lib/format";
 import type { Equipment, EquipmentStatus, Paginated } from "@/lib/types";
@@ -24,6 +25,7 @@ export default function AdminEquipmentPage() {
   const [status, setStatus] = useState<EquipmentStatus | "">("");
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [editing, setEditing] = useState<Equipment | undefined>();
 
   const load = useCallback(() => {
     const params = new URLSearchParams({ page: String(page), limit: "10" });
@@ -55,6 +57,20 @@ export default function AdminEquipmentPage() {
     }
   };
 
+  const remove = async (item: Equipment) => {
+    if (!window.confirm(`Delete "${item.name}"? This cannot be undone.`)) return;
+    setBusyId(item._id);
+    try {
+      await api.delete(`/admin/equipment/${item._id}`);
+      toast.success("Equipment deleted.");
+      load();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not delete this equipment.");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   return (
     <div>
       <PageHeader
@@ -67,7 +83,7 @@ export default function AdminEquipmentPage() {
           <button
             key={f.value || "all"}
             type="button"
-            className={`btn btn-xs ${status === f.value ? "btn-primary" : "btn-outline"}`}
+            className={`ui-button ui-button-xs ${status === f.value ? "ui-button-primary" : "ui-button-outline"}`}
             onClick={() => {
               setPage(1);
               setStatus(f.value);
@@ -89,7 +105,7 @@ export default function AdminEquipmentPage() {
       ) : (
         <>
           <div className="table-surface scroll-thin overflow-x-auto">
-            <table className="table table-sm">
+            <table className="ui-table ui-table-sm">
               <thead>
                 <tr className="bg-base-200 text-xs uppercase tracking-wide">
                   <th>Equipment</th>
@@ -124,7 +140,7 @@ export default function AdminEquipmentPage() {
                       <div className="flex justify-end gap-1.5">
                         <button
                           type="button"
-                          className="btn btn-success btn-xs gap-1 text-success-content"
+                          className="ui-button ui-button-success ui-button-xs gap-1 text-success-content"
                           disabled={busyId === item._id || item.status === "approved"}
                           onClick={() => setStatusFor(item, "approved")}
                         >
@@ -132,11 +148,17 @@ export default function AdminEquipmentPage() {
                         </button>
                         <button
                           type="button"
-                          className="btn btn-outline btn-error btn-xs gap-1"
+                          className="ui-button ui-button-outline ui-button-error ui-button-xs gap-1"
                           disabled={busyId === item._id || item.status === "rejected"}
                           onClick={() => setStatusFor(item, "rejected")}
                         >
                           <XCircle className="size-3.5" /> Reject
+                        </button>
+                        <button type="button" className="ui-button ui-button-ghost ui-button-xs gap-1" onClick={() => setEditing(item)} aria-label={`Edit ${item.name}`}>
+                          <Pencil className="size-3.5" /> Update
+                        </button>
+                        <button type="button" className="ui-button ui-button-ghost ui-button-xs gap-1 text-error" disabled={busyId === item._id} onClick={() => remove(item)} aria-label={`Delete ${item.name}`}>
+                          <Trash2 className="size-3.5" /> Delete
                         </button>
                       </div>
                     </td>
@@ -147,6 +169,18 @@ export default function AdminEquipmentPage() {
           </div>
           <Pagination page={data.page} pages={data.pages} onChange={setPage} busy={loading} />
         </>
+      )}
+
+      {editing && (
+        <EquipmentFormModal
+          initial={editing}
+          admin
+          onClose={() => setEditing(undefined)}
+          onSaved={() => {
+            setEditing(undefined);
+            load();
+          }}
+        />
       )}
     </div>
   );
