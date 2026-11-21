@@ -8,7 +8,7 @@ export default function Loading() {
         <span className="animate-pulse">
           <Logo />
         </span>
-        <span className="loading loading-spinner loading-lg text-primary" />
+        <span className="ui-loading ui-loading-spinner ui-loading-lg text-primary" />
         <p className="text-sm font-medium opacity-60">Loading the best gear for you…</p>
       </div>
     </div>
