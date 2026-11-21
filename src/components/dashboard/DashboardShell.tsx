@@ -69,7 +69,7 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
             </span>
             <span className="min-w-0">
               <span className="block truncate text-sm font-extrabold">{user.name}</span>
-              <span className="badge badge-primary badge-sm mt-1 capitalize">{user.role}</span>
+              <span className="ui-badge ui-badge-primary ui-badge-sm mt-1 capitalize">{user.role}</span>
             </span>
           </div>
 
@@ -91,16 +91,16 @@ export default function DashboardShell({ children }: { children: ReactNode }) {
           </nav>
 
           <div className="border-base-content/10 mt-4 flex flex-col gap-1 border-t pt-4">
-            <Link href="/" className="btn btn-ghost btn-sm justify-start gap-2.5 font-semibold">
+            <Link href="/" className="ui-button ui-button-ghost ui-button-sm justify-start gap-2.5 font-semibold">
               <ExternalLink className="size-4" /> View site
             </Link>
-            <Link href="/profile" className="btn btn-ghost btn-sm justify-start gap-2.5 font-semibold">
+            <Link href="/profile" className="ui-button ui-button-ghost ui-button-sm justify-start gap-2.5 font-semibold">
               <UserRound className="size-4" /> Account settings
             </Link>
             <button
               type="button"
               onClick={logout}
-              className="btn btn-ghost btn-sm justify-start gap-2.5 font-semibold text-error"
+              className="ui-button ui-button-ghost ui-button-sm justify-start gap-2.5 font-semibold text-error"
             >
               <LogOut className="size-4" /> Logout
             </button>
