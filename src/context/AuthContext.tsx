@@ -10,14 +10,15 @@ import {
   type ReactNode,
 } from "react";
 import toast from "react-hot-toast";
+import { authClient } from "@/lib/auth-client";
 import {
+  ApiError,
   api,
   clearSession,
   getStoredUser,
-  getToken,
+  refreshAuthToken,
   storeSession,
   updateUserCache,
-  type AuthResponse,
 } from "@/lib/api";
 import type { Role, User } from "@/lib/types";
 
@@ -26,6 +27,7 @@ interface RegisterInput {
   email: string;
   photoURL?: string;
   password: string;
+  role: Exclude<Role, "admin">;
 }
 
 type ProfileUpdate = Partial<Pick<User, "name" | "photoURL" | "phone" | "address">>;
@@ -35,13 +37,35 @@ interface AuthContextValue {
   loading: boolean;
   register: (input: RegisterInput) => Promise<User>;
   login: (email: string, password: string) => Promise<User>;
-  loginWithGoogle: (idToken: string) => Promise<User>;
-  logout: () => void;
+  loginWithGoogle: (idToken: string, signupRole?: Exclude<Role, "admin">) => Promise<User>;
+  logout: () => Promise<void>;
   updateProfile: (input: ProfileUpdate) => Promise<User>;
   hasRole: (...roles: Role[]) => boolean;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
+
+function getGoogleProfilePhoto(idToken: string): string | null {
+  const payload = idToken.split(".")[1];
+  if (!payload) return null;
+
+  try {
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const claims: unknown = JSON.parse(atob(base64.padEnd(Math.ceil(base64.length / 4) * 4, "=")));
+    if (
+      typeof claims === "object" &&
+      claims !== null &&
+      "picture" in claims &&
+      typeof claims.picture === "string" &&
+      /^https:\/\//i.test(claims.picture)
+    ) {
+      return claims.picture;
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
 
 /** Password rules from the assignment: at least one uppercase, one lowercase, 6+ chars. */
 export function validatePassword(password: string): string | null {
@@ -57,24 +81,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Rehydrate the session on reload so private routes never bounce a logged-in user to /login.
   useEffect(() => {
-    const token = getToken();
+    let active = true;
     const cached = getStoredUser<User>();
-    if (token && cached) {
-      api
-        .get<{ user: User }>("/auth/me")
-        .then(({ user: fresh }) => {
+    const restore = async () => {
+      try {
+        const session = await authClient.getSession();
+        if (session.error) {
+          throw new ApiError(session.error.message || "Could not restore your session.", session.error.status);
+        }
+        if (!session.data?.user) {
+          clearSession();
+          return;
+        }
+        const token = await refreshAuthToken();
+        storeSession(token, session.data.user);
+        const { user: fresh } = await api.get<{ user: User }>("/users/me");
+        if (active) {
           setUser(fresh);
           updateUserCache(fresh);
-        })
-        .catch(() => {
-          // network hiccup: fall back to the cached session instead of logging out
-          setUser(cached);
-        })
-        .finally(() => setLoading(false));
-    } else {
-      clearSession();
-      Promise.resolve().then(() => setLoading(false));
-    }
+        }
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 0 && cached) {
+          if (active) setUser(cached);
+        } else {
+          clearSession();
+          if (active) setUser(null);
+        }
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+    void restore();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const loadAuthenticatedUser = useCallback(async (message: string): Promise<User> => {
+    const token = await refreshAuthToken();
+    const { user: fresh } = await api.get<{ user: User }>("/users/me");
+    storeSession(token, fresh);
+    setUser(fresh);
+    toast.success(message.replace("{name}", fresh.name));
+    return fresh;
   }, []);
 
   const register = useCallback(async (input: RegisterInput): Promise<User> => {
@@ -83,31 +132,59 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       toast.error(problem);
       throw new Error(problem);
     }
-    const res = await api.post<AuthResponse>("/auth/register", input);
-    storeSession(res.token, res.user);
-    setUser(res.user);
-    toast.success(`Welcome to RentGear, ${res.user.name}!`);
-    return res.user;
-  }, []);
+    const result = await authClient.signUp.email({
+      name: input.name,
+      email: input.email,
+      password: input.password,
+      image: input.photoURL,
+      role: input.role,
+    });
+    if (result.error) throw new Error(result.error.message || "Could not create your account.");
+    return loadAuthenticatedUser("Welcome to RentGear, {name}!");
+  }, [loadAuthenticatedUser]);
 
   const login = useCallback(async (email: string, password: string): Promise<User> => {
-    const res = await api.post<AuthResponse>("/auth/login", { email, password });
-    storeSession(res.token, res.user);
-    setUser(res.user);
-    toast.success(`Welcome back, ${res.user.name}!`);
-    return res.user;
-  }, []);
+    const result = await authClient.signIn.email({ email, password });
+    if (result.error) throw new Error(result.error.message || "Email or password is incorrect.");
+    return loadAuthenticatedUser("Welcome, {name}!");
+  }, [loadAuthenticatedUser]);
 
-  // Google users always get the customer role (decided by the server)
-  const loginWithGoogle = useCallback(async (idToken: string): Promise<User> => {
-    const res = await api.post<AuthResponse>("/auth/google", { idToken });
-    storeSession(res.token, res.user);
-    setUser(res.user);
-    toast.success(`Welcome, ${res.user.name}!`);
-    return res.user;
-  }, []);
+  const loginWithGoogle = useCallback(async (
+    idToken: string,
+    signupRole?: Exclude<Role, "admin">,
+  ): Promise<User> => {
+    await api.post<{ token: string; user: User }>(
+      "/auth/one-tap/callback",
+      { idToken, callbackURL: `${window.location.origin}/dashboard` },
+      {
+        auth: false,
+        headers: signupRole ? { "X-Signup-Role": signupRole } : undefined,
+      },
+    );
+    let authenticatedUser = await loadAuthenticatedUser("Welcome back, {name}!");
+    if (!authenticatedUser.photoURL) {
+      const photoURL = getGoogleProfilePhoto(idToken);
+      if (photoURL) {
+        try {
+          const result = await api.patch<{ user: User }>("/users/me", { photoURL });
+          authenticatedUser = result.user;
+          setUser(authenticatedUser);
+          updateUserCache(authenticatedUser);
+        } catch (error) {
+          toast.error(
+            error instanceof Error
+              ? `Signed in, but couldn't save your Google photo: ${error.message}`
+              : "Signed in, but couldn't save your Google photo.",
+          );
+        }
+      }
+    }
+    return authenticatedUser;
+  }, [loadAuthenticatedUser]);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    const result = await authClient.signOut();
+    if (result.error) throw new Error(result.error.message || "Could not end the session.");
     clearSession();
     setUser(null);
     toast.success("You have been logged out.");
