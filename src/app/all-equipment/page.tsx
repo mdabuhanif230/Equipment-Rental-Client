@@ -48,6 +48,9 @@ function readFilters(params: URLSearchParams): Filters {
 
 function buildQuery(filters: Filters, page: number): string {
   const params = new URLSearchParams();
+  // The API defaults to 10 results; request enough for the current catalog so
+  // all database listings appear together and pagination only returns if it grows.
+  params.set("limit", "50");
   if (filters.search.trim()) params.set("search", filters.search.trim());
   if (filters.location.trim()) params.set("location", filters.location.trim());
   if (filters.category) params.set("category", filters.category);
@@ -73,6 +76,7 @@ function AllEquipmentInner() {
   const [categories, setCategories] = useState<CategoryCount[]>([]);
   const [result, setResult] = useState<Paginated<Equipment> | null>(null);
   const [loadedQuery, setLoadedQuery] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
   const [error, setError] = useState("");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
@@ -108,7 +112,7 @@ function AllEquipmentInner() {
     return () => {
       active = false;
     };
-  }, [query, pathname, router]);
+  }, [query, pathname, router, retryCount]);
 
   // Category options for the filter sidebar
   useEffect(() => {
@@ -166,38 +170,38 @@ function AllEquipmentInner() {
           <SlidersHorizontal className="size-4" /> Filters
         </h2>
         {activeFilterCount > 0 && (
-          <button type="button" onClick={resetFilters} className="btn btn-ghost btn-xs gap-1">
+          <button type="button" onClick={resetFilters} className="ui-button ui-button-ghost ui-button-xs gap-1">
             <X className="size-3.5" /> Reset
           </button>
         )}
       </div>
 
-      <label className="form-control">
-        <span className="label py-1 text-xs font-semibold opacity-70">Keyword</span>
+      <label className="ui-form-control">
+        <span className="ui-label py-1 text-xs font-semibold opacity-70">Keyword</span>
         <input
           type="search"
-          className="input input-bordered input-sm"
+          className="ui-input ui-input-bordered ui-input-sm"
           placeholder="e.g. excavator"
           value={filters.search}
           onChange={(e) => update("search", e.target.value)}
         />
       </label>
 
-      <label className="form-control">
-        <span className="label py-1 text-xs font-semibold opacity-70">Location</span>
+      <label className="ui-form-control">
+        <span className="ui-label py-1 text-xs font-semibold opacity-70">Location</span>
         <input
           type="text"
-          className="input input-bordered input-sm"
+          className="ui-input ui-input-bordered ui-input-sm"
           placeholder="e.g. Dhaka"
           value={filters.location}
           onChange={(e) => update("location", e.target.value)}
         />
       </label>
 
-      <label className="form-control">
-        <span className="label py-1 text-xs font-semibold opacity-70">Category</span>
+      <label className="ui-form-control">
+        <span className="ui-label py-1 text-xs font-semibold opacity-70">Category</span>
         <select
-          className="select select-bordered select-sm"
+          className="ui-select ui-select-bordered ui-select-sm"
           value={filters.category}
           onChange={(e) => update("category", e.target.value)}
         >
@@ -210,10 +214,10 @@ function AllEquipmentInner() {
         </select>
       </label>
 
-      <label className="form-control">
-        <span className="label py-1 text-xs font-semibold opacity-70">Rental type</span>
+      <label className="ui-form-control">
+        <span className="ui-label py-1 text-xs font-semibold opacity-70">Rental type</span>
         <select
-          className="select select-bordered select-sm"
+          className="ui-select ui-select-bordered ui-select-sm"
           value={filters.rentalType}
           onChange={(e) => update("rentalType", e.target.value as RentalType | "")}
         >
@@ -225,23 +229,23 @@ function AllEquipmentInner() {
       </label>
 
       <div className="grid grid-cols-2 gap-2">
-        <label className="form-control">
-          <span className="label py-1 text-xs font-semibold opacity-70">Min price</span>
+        <label className="ui-form-control">
+          <span className="ui-label py-1 text-xs font-semibold opacity-70">Min price</span>
           <input
             type="number"
             min={0}
-            className="input input-bordered input-sm"
+            className="ui-input ui-input-bordered ui-input-sm"
             placeholder="0"
             value={filters.minPrice}
             onChange={(e) => update("minPrice", e.target.value)}
           />
         </label>
-        <label className="form-control">
-          <span className="label py-1 text-xs font-semibold opacity-70">Max price</span>
+        <label className="ui-form-control">
+          <span className="ui-label py-1 text-xs font-semibold opacity-70">Max price</span>
           <input
             type="number"
             min={0}
-            className="input input-bordered input-sm"
+            className="ui-input ui-input-bordered ui-input-sm"
             placeholder="1000"
             value={filters.maxPrice}
             onChange={(e) => update("maxPrice", e.target.value)}
@@ -249,17 +253,17 @@ function AllEquipmentInner() {
         </label>
       </div>
 
-      <label className="label cursor-pointer justify-start gap-3 py-1">
+      <label className="ui-label cursor-pointer justify-start gap-3 py-1">
         <input
           type="checkbox"
-          className="toggle toggle-primary toggle-sm"
+          className="ui-toggle ui-toggle-primary ui-toggle-sm"
           checked={filters.available}
           onChange={(e) => update("available", e.target.checked)}
         />
-        <span className="label-text text-sm font-semibold">Available only</span>
+        <span className="ui-label-text text-sm font-semibold">Available only</span>
       </label>
 
-      <button type="submit" className="btn btn-primary btn-sm w-full font-bold">
+      <button type="submit" className="ui-button ui-button-primary ui-button-sm w-full font-bold">
         Apply filters
       </button>
     </form>
@@ -281,13 +285,13 @@ function AllEquipmentInner() {
         <aside className="card-surface sticky top-24 p-5">
           <button
             type="button"
-            className="btn btn-outline btn-sm w-full justify-between lg:hidden"
+            className="ui-button ui-button-outline ui-button-sm w-full justify-between lg:hidden"
             onClick={() => setMobileFiltersOpen((o) => !o)}
           >
             <span className="flex items-center gap-2">
               <SlidersHorizontal className="size-4" /> Filters &amp; sort
             </span>
-            <span className="badge badge-primary badge-sm">{activeFilterCount}</span>
+            <span className="ui-badge ui-badge-primary ui-badge-sm">{activeFilterCount}</span>
           </button>
           <div className={`${mobileFiltersOpen ? "block" : "hidden"} mt-4 lg:mt-0 lg:block`}>
             {filterForm}
@@ -297,7 +301,9 @@ function AllEquipmentInner() {
         <section>
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <p className="text-sm font-semibold opacity-70" aria-live="polite">
-              {loading ? (
+              {error ? (
+                "Catalogue unavailable"
+              ) : loading ? (
                 "Searching…"
               ) : result ? (
                 <>
@@ -312,7 +318,7 @@ function AllEquipmentInner() {
             <label className="flex items-center gap-2 text-sm font-semibold">
               <span className="opacity-60">Sort by</span>
               <select
-                className="select select-bordered select-sm"
+                className="ui-select ui-select-bordered ui-select-sm"
                 value={filters.sort}
                 onChange={(e) => update("sort", e.target.value as Sort)}
               >
@@ -323,21 +329,30 @@ function AllEquipmentInner() {
             </label>
           </div>
 
-          {error && (
-            <div className="alert alert-error mb-5 text-sm">
-              <span>{error}</span>
-              <button type="button" className="btn btn-sm" onClick={resetFilters}>
-                Clear filters
-              </button>
-            </div>
-          )}
-
           {loading ? (
             <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="card-surface aspect-4/3 animate-pulse bg-base-200" />
               ))}
             </div>
+          ) : error ? (
+            <EmptyState
+              icon={<SearchX className="size-6" />}
+              title="Equipment catalogue unavailable"
+              description={error}
+              action={
+                <button
+                  type="button"
+                  className="ui-button ui-button-primary ui-button-sm mt-2"
+                  onClick={() => {
+                    setLoadedQuery(null);
+                    setRetryCount((count) => count + 1);
+                  }}
+                >
+                  Try again
+                </button>
+              }
+            />
           ) : result && result.items.length > 0 ? (
             <>
               <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
@@ -353,7 +368,7 @@ function AllEquipmentInner() {
               title="No equipment matches those filters"
               description="Try widening the price range, clearing the location, or browsing every category."
               action={
-                <button type="button" onClick={resetFilters} className="btn btn-primary btn-sm mt-2">
+                <button type="button" onClick={resetFilters} className="ui-button ui-button-primary ui-button-sm mt-2">
                   Reset filters
                 </button>
               }
