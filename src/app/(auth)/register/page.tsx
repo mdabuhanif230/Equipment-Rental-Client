@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState, type FormEvent } from "react";
+import { Suspense, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import toast from "react-hot-toast";
-import { Eye, EyeOff, ImagePlus, LockKeyhole, Mail, UserRound } from "lucide-react";
+import { Eye, EyeOff, ImagePlus, LoaderCircle, LockKeyhole, Mail, UserRound } from "lucide-react";
 import AuthShell from "@/components/AuthShell";
 import GoogleLoginButton from "@/components/GoogleLoginButton";
 import { useAuth, validatePassword } from "@/context/AuthContext";
+import { uploadImageToImgBB } from "@/lib/upload-image";
 import type { Role } from "@/lib/types";
 
 const dashboardPath: Record<Role, string> = {
@@ -22,17 +23,45 @@ function RegisterInner() {
   const searchParams = useSearchParams();
 
   const [form, setForm] = useState({ name: "", email: "", photo: "", password: "", confirm: "" });
+  const [signupRole, setSignupRole] = useState<Exclude<Role, "admin"> | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const photoFileInput = useRef<HTMLInputElement>(null);
 
   const update = (key: keyof typeof form) => (e: { target: { value: string } }) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
 
+  const handlePhotoUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    setUploadingPhoto(true);
+    try {
+      const photoURL = await uploadImageToImgBB(file);
+      setForm((current) => ({ ...current, photo: photoURL }));
+      toast.success("Photo uploaded.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not upload your photo.");
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
+    if (uploadingPhoto) {
+      toast.error("Wait for the photo upload to finish.");
+      return;
+    }
     if (!form.name.trim() || !form.email.trim()) {
       toast.error("Name and email are required.");
+      return;
+    }
+    if (!signupRole) {
+      toast.error("Choose whether you are joining as a customer or equipment owner.");
       return;
     }
     // Assignment rule: uppercase + lowercase + at least 6 characters
@@ -53,6 +82,7 @@ function RegisterInner() {
         email: form.email.trim(),
         photoURL: form.photo.trim() || undefined,
         password: form.password,
+        role: signupRole,
       });
       const next = searchParams.get("next");
       router.replace(next || dashboardPath[created.role] || "/dashboard/customer");
@@ -64,18 +94,19 @@ function RegisterInner() {
   };
 
   const field =
-    "input input-bordered flex w-full items-center gap-2 focus-within:outline-primary";
+    "ui-input ui-input-bordered flex w-full items-center gap-2 focus-within:outline-primary";
 
   return (
     <AuthShell
-      eyebrow="Join RentGear"
-      title={<>Create your account</>}
-      subtitle="Register as a customer, rent in seconds, or switch to owner mode to earn from your gear."
+      mode="register"
+      eyebrow="Get started"
+      title={<>Create Account</>}
+      subtitle="Let’s get you started."
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
-        <label className="form-control">
-          <div className="label py-1">
-            <span className="label-text font-semibold">Full name</span>
+        <label className="ui-form-control">
+          <div className="ui-label py-1">
+            <span className="ui-label-text font-semibold">Full name</span>
           </div>
           <label className={field}>
             <UserRound className="size-4 opacity-60" />
@@ -91,9 +122,9 @@ function RegisterInner() {
           </label>
         </label>
 
-        <label className="form-control">
-          <div className="label py-1">
-            <span className="label-text font-semibold">Email address</span>
+        <label className="ui-form-control">
+          <div className="ui-label py-1">
+            <span className="ui-label-text font-semibold">Email address</span>
           </div>
           <label className={field}>
             <Mail className="size-4 opacity-60" />
@@ -110,27 +141,53 @@ function RegisterInner() {
           </label>
         </label>
 
-        <label className="form-control">
-          <div className="label py-1">
-            <span className="label-text font-semibold">
-              Photo URL <span className="opacity-50">(optional)</span>
+        <div className="ui-form-control">
+          <div className="ui-label py-1">
+            <span className="ui-label-text font-semibold">
+              Profile photo <span className="opacity-50">(optional)</span>
             </span>
+          </div>
+          <div className="mb-2 flex flex-wrap items-center gap-2">
+            <input
+              ref={photoFileInput}
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              aria-label="Choose a profile photo from this device"
+              onChange={handlePhotoUpload}
+              disabled={uploadingPhoto || submitting}
+            />
+            <button
+              type="button"
+              className="ui-button ui-button-outline ui-button-sm gap-2"
+              onClick={() => photoFileInput.current?.click()}
+              disabled={uploadingPhoto || submitting}
+            >
+              {uploadingPhoto ? (
+                <LoaderCircle className="size-4 animate-spin" />
+              ) : (
+                <ImagePlus className="size-4" />
+              )}
+              {uploadingPhoto ? "Uploading photo..." : "Choose from device"}
+            </button>
+            <span className="text-xs opacity-60">Uploads are hosted by ImgBB.</span>
           </div>
           <label className={field}>
             <ImagePlus className="size-4 opacity-60" />
             <input
               name="photo"
-              placeholder="https://i.ibb.co/your-avatar.png"
+              aria-label="Profile photo URL"
+              placeholder="Or paste a photo URL"
               value={form.photo}
               onChange={update("photo")}
               className="grow"
             />
           </label>
-        </label>
+        </div>
 
-        <label className="form-control">
-          <div className="label py-1">
-            <span className="label-text font-semibold">Password</span>
+        <label className="ui-form-control">
+          <div className="ui-label py-1">
+            <span className="ui-label-text font-semibold">Password</span>
           </div>
           <label className={field}>
             <LockKeyhole className="size-4 opacity-60" />
@@ -148,22 +205,20 @@ function RegisterInner() {
               type="button"
               tabIndex={-1}
               onClick={() => setShowPassword((s) => !s)}
-              className="btn btn-ghost btn-xs btn-circle"
+              className="ui-button ui-button-ghost ui-button-xs ui-button-circle"
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
             </button>
           </label>
-          <div className="label py-1">
-            <span className="label-text-alt opacity-60">
-              Must include an uppercase and a lowercase letter, min. 6 characters.
-            </span>
-          </div>
+          <p className="mt-1 max-w-full text-xs leading-relaxed opacity-60">
+            Must include an uppercase and a lowercase letter, min. 6 characters.
+          </p>
         </label>
 
-        <label className="form-control">
-          <div className="label py-1">
-            <span className="label-text font-semibold">Confirm password</span>
+        <label className="ui-form-control">
+          <div className="ui-label py-1">
+            <span className="ui-label-text font-semibold">Confirm password</span>
           </div>
           <label className={field}>
             <LockKeyhole className="size-4 opacity-60" />
@@ -180,13 +235,48 @@ function RegisterInner() {
           </label>
         </label>
 
-        <button type="submit" className="btn btn-primary mt-1 w-full font-bold" disabled={submitting}>
-          {submitting ? <span className="loading loading-spinner loading-sm" /> : "Create Account"}
+        <fieldset className="ui-form-control">
+          <legend className="ui-label py-1">
+            <span className="ui-label-text font-semibold">Choose your role</span>
+          </legend>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {([
+              { value: "customer", title: "Customer", description: "Rent equipment" },
+              { value: "owner", title: "Equipment owner", description: "List gear for rent" },
+            ] as const).map((option) => (
+              <label
+                key={option.value}
+                className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition ${
+                  signupRole === option.value
+                    ? "border-primary bg-primary/5 ring-1 ring-primary"
+                    : "border-base-content/15 hover:border-primary/50"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="signupRole"
+                  value={option.value}
+                  checked={signupRole === option.value}
+                  onChange={() => setSignupRole(option.value)}
+                  className="ui-radio ui-radio-primary ui-radio-sm mt-0.5"
+                />
+                <span>
+                  <span className="block text-sm font-semibold">{option.title}</span>
+                  <span className="mt-1 block text-xs opacity-65">{option.description}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+          <span className="mt-1 text-xs opacity-60">Select a role to continue with email or Google.</span>
+        </fieldset>
+
+        <button type="submit" className="ui-button ui-button-primary mt-1 w-full font-bold" disabled={submitting}>
+          {submitting ? <span className="ui-loading ui-loading-spinner ui-loading-sm" /> : "Sign Up"}
         </button>
 
-        <div className="divider my-1 text-xs opacity-60">OR SIGN UP WITH</div>
+        <div className="ui-divider my-1 text-xs opacity-60">OR SIGN UP WITH</div>
 
-        <GoogleLoginButton text="signup_with" />
+        <GoogleLoginButton text="signup_with" signupRole={signupRole ?? undefined} />
 
         <p className="mt-2 text-center text-sm opacity-75">
           Already have an account?{" "}
@@ -204,7 +294,7 @@ export default function RegisterPage() {
     <Suspense
       fallback={
         <div className="grid min-h-[70vh] place-items-center">
-          <span className="loading loading-spinner loading-lg text-primary" />
+          <span className="ui-loading ui-loading-spinner ui-loading-lg text-primary" />
         </div>
       }
     >
