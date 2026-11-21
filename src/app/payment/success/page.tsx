@@ -74,11 +74,11 @@ function PaymentSuccessInner() {
 
           <div className="p-6 text-left">
             {finalError && (
-              <div className="alert alert-warning mb-4 text-xs">
+              <div className="ui-alert ui-alert-warning mb-4 text-xs">
                 <span>{finalError}</span>
                 <button
                   type="button"
-                  className="btn btn-xs"
+                  className="ui-button ui-button-xs"
                   onClick={() => setAttempt((a) => a + 1)}
                   disabled={loading}
                 >
@@ -112,10 +112,10 @@ function PaymentSuccessInner() {
                 <div className="flex items-center justify-between gap-4">
                   <dt className="opacity-60">Status</dt>
                   <dd className="flex gap-2">
-                    <span className="badge badge-sm capitalize badge-outline">{booking.status}</span>
+                    <span className="ui-badge ui-badge-sm capitalize ui-badge-outline">{booking.status}</span>
                     <span
-                      className={`badge badge-sm capitalize ${
-                        paid ? "badge-success" : "badge-warning"
+                      className={`ui-badge ui-badge-sm capitalize ${
+                        paid ? "ui-badge-success" : "ui-badge-warning"
                       }`}
                     >
                       {booking.paymentStatus}
@@ -129,7 +129,7 @@ function PaymentSuccessInner() {
               </dl>
             ) : loading ? (
               <div className="flex flex-col items-center gap-3 py-4">
-                <span className="loading loading-spinner text-primary" />
+                <span className="ui-loading ui-loading-spinner text-primary" />
                 <p className="text-sm opacity-60">Fetching your booking…</p>
               </div>
             ) : (
@@ -139,10 +139,10 @@ function PaymentSuccessInner() {
             )}
 
             <div className="mt-6 grid gap-3">
-              <Link href="/dashboard/customer" className="btn btn-primary font-bold">
+              <Link href="/dashboard/customer" className="ui-button ui-button-primary font-bold">
                 <PackageCheck className="size-4" /> View my bookings
               </Link>
-              <Link href="/all-equipment" className="btn btn-ghost btn-sm">
+              <Link href="/all-equipment" className="ui-button ui-button-ghost ui-button-sm">
                 Keep browsing equipment
               </Link>
             </div>
@@ -158,7 +158,7 @@ export default function PaymentSuccessPage() {
     <Suspense
       fallback={
         <div className="grid min-h-[70vh] place-items-center">
-          <span className="loading loading-spinner loading-lg text-primary" />
+          <span className="ui-loading ui-loading-spinner ui-loading-lg text-primary" />
         </div>
       }
     >
