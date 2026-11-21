@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Heart, MapPin, ShieldCheck } from "lucide-react";
 import type { Equipment } from "@/lib/types";
+import { Button } from "@/components/ui/button";
 
 interface EquipmentCardProps {
   item: Equipment;
@@ -39,19 +40,19 @@ export default function EquipmentCard({
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          // eslint-disable-next-line @next/next/no-img-element -- local SVG fallback
+          // eslint-disable-next-line @next/next/no-img-element -- local PNG fallback
           <img
-            src="/images/placeholder.svg"
+            src="/images/placeholder.png"
             alt={item.name}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         )}
-        <span className="badge badge-primary badge-sm absolute top-3 left-3 font-semibold text-primary-content">
+        <span className="ui-badge ui-badge-primary ui-badge-sm absolute top-3 left-3 font-semibold text-primary-content">
           {item.category}
         </span>
         <span
-          className={`badge badge-sm absolute top-3 right-3 font-bold ${
-            inStock ? "badge-success" : "badge-error"
+          className={`ui-badge ui-badge-sm absolute top-3 right-3 font-bold ${
+            inStock ? "ui-badge-success" : "ui-badge-error"
           }`}
         >
           {inStock ? `${item.quantity} available` : "Unavailable"}
@@ -75,8 +76,8 @@ export default function EquipmentCard({
             <button
               type="button"
               onClick={() => onToggleFavorite(item)}
-              className={`btn btn-circle btn-xs ${
-                isFavorite ? "btn-error" : "btn-ghost border border-base-content/10"
+              className={`ui-button ui-button-circle ui-button-xs ${
+                isFavorite ? "ui-button-error" : "ui-button-ghost border border-base-content/10"
               }`}
               aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
             >
@@ -88,9 +89,9 @@ export default function EquipmentCard({
         <p className="line-clamp-2 text-sm leading-relaxed opacity-70">{item.description}</p>
 
         <div className="flex flex-wrap gap-1.5">
-          <span className="badge badge-ghost badge-sm">{item.condition}</span>
-          <span className="badge badge-ghost badge-sm">{item.brand}</span>
-          <span className="badge badge-ghost badge-sm">{item.rentalType} rental</span>
+          <span className="ui-badge ui-badge-ghost ui-badge-sm">{item.condition}</span>
+          <span className="ui-badge ui-badge-ghost ui-badge-sm">{item.brand}</span>
+          <span className="ui-badge ui-badge-ghost ui-badge-sm">{item.rentalType} rental</span>
         </div>
 
         <div className="mt-auto flex items-center justify-between gap-3 border-base-content/10 pt-3 border-t">
@@ -100,13 +101,13 @@ export default function EquipmentCard({
               /{item.rentalType === "Daily" ? "day" : item.rentalType === "Weekly" ? "week" : "month"}
             </span>
           </p>
-          <Link href={`/equipment/${item._id}`} className="btn btn-primary btn-sm px-4 font-semibold">
-            View Details
-          </Link>
+          <Button asChild size="sm" className="px-4">
+            <Link href={`/equipment/${item._id}`}>View Details</Link>
+          </Button>
         </div>
 
         {item.status !== "approved" && (
-          <p className="badge badge-warning badge-outline gap-1 text-xs">
+          <p className="ui-badge ui-badge-warning ui-badge-outline gap-1 text-xs">
             <ShieldCheck className="size-3.5" /> Awaiting approval
           </p>
         )}
