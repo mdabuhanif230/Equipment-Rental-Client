@@ -5,6 +5,13 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   reactCompiler: true,
+  experimental: {
+    // These pages read the session on the client (AuthGuard), so they are
+    // allowed to block. Only explicitly opted-in segments are validated.
+    instantInsights: {
+      validationLevel: "manual-warning",
+    },
+  },
   async headers() {
     if (process.env.NODE_ENV !== "development") {
       return [];
