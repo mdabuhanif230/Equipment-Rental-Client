@@ -18,9 +18,9 @@ interface BookingsTableProps {
 }
 
 const HEADERS: Record<Variant, string[]> = {
-  customer: ["Equipment", "Rental period", "Qty", "Total", "Status", "Payment", "Actions"],
-  owner: ["Customer", "Equipment", "Rental period", "Total", "Status", "Payment", "Actions"],
-  admin: ["Booking", "Customer", "Equipment", "Rental period", "Total", "Status", "Payment", "Actions"],
+  customer: ["Equipment", "Start date", "End date", "Booking date", "Qty", "Total", "Payment", "Status", "Actions"],
+  owner: ["Customer", "Equipment", "Rental duration", "Required qty", "Booking amount", "Payment", "Status", "Actions"],
+  admin: ["Booking", "Customer", "Owner", "Equipment", "Rental duration", "Booking amount", "Payment", "Status", "Actions"],
 };
 
 /** Bookings table with the exact columns each role needs (assignment spec). */
@@ -60,11 +60,16 @@ export default function BookingsTable({
                     <p className="font-bold">{b.equipmentName}</p>
                     <p className="font-mono text-xs opacity-50">#{b._id.slice(-6)}</p>
                   </td>
-                  <td>{period(b)}</td>
+                  <td className="whitespace-nowrap text-xs">
+                    <CalendarDays className="mr-1 inline size-3.5 opacity-60" />
+                    {formatShortDate(b.startDate)}
+                  </td>
+                  <td className="whitespace-nowrap text-xs">{formatShortDate(b.endDate)}</td>
+                  <td className="whitespace-nowrap text-xs opacity-70">{formatShortDate(b.createdAt)}</td>
                   <td className="font-semibold">{b.quantity}</td>
                   <td className="font-black">{formatCurrency(b.totalAmount)}</td>
-                  <td><StatusBadge status={b.status} /></td>
                   <td><PaymentBadge status={b.paymentStatus} /></td>
+                  <td><StatusBadge status={b.status} /></td>
                   <td>
                     <div className="flex flex-wrap gap-1.5">
                       {unpaid && onPay && (
@@ -111,9 +116,10 @@ export default function BookingsTable({
                     <p className="text-xs opacity-55">{b.phone}</p>
                   </td>
                   <td>{period(b)}</td>
+                  <td className="font-semibold">{b.quantity}</td>
                   <td className="font-black">{formatCurrency(b.totalAmount)}</td>
-                  <td><StatusBadge status={b.status} /></td>
                   <td><PaymentBadge status={b.paymentStatus} /></td>
+                  <td><StatusBadge status={b.status} /></td>
                   <td>
                     {completable && onComplete ? (
                       <button
@@ -139,11 +145,15 @@ export default function BookingsTable({
                   <p className="font-bold">{b.customerName}</p>
                   <p className="truncate text-xs opacity-55">{b.customerEmail}</p>
                 </td>
+                <td className="min-w-40">
+                  <p className="font-semibold">{b.ownerName || "—"}</p>
+                  {b.ownerEmail && <p className="truncate text-xs opacity-55">{b.ownerEmail}</p>}
+                </td>
                 <td className="min-w-40 font-semibold">{b.equipmentName}</td>
                 <td>{period(b)}</td>
                 <td className="font-black">{formatCurrency(b.totalAmount)}</td>
-                <td><StatusBadge status={b.status} /></td>
                 <td><PaymentBadge status={b.paymentStatus} /></td>
+                <td><StatusBadge status={b.status} /></td>
                 <td>
                   {unpaid && onCancel ? (
                     <button

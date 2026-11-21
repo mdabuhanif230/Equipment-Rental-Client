@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Search, ShieldAlert } from "lucide-react";
+import { Ban, ShieldCheck, Search, ShieldAlert } from "lucide-react";
 import PageHeader from "@/components/dashboard/PageHeader";
 import { RoleBadge } from "@/components/dashboard/Badges";
 import EmptyState from "@/components/EmptyState";
@@ -51,6 +51,24 @@ export default function AdminUsersPage() {
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not change the role.");
       load();
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const toggleBan = async (target: User) => {
+    const next = !target.banned;
+    const message = next
+      ? `Suspend ${target.name}? They will be signed out and unable to use the platform.`
+      : `Restore ${target.name}'s account?`;
+    if (!window.confirm(message)) return;
+    setBusyId(target._id);
+    try {
+      await api.patch<{ user: User }>(`/admin/users/${target._id}/ban`, { banned: next });
+      toast.success(next ? "Account suspended." : "Account restored.");
+      load();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not update this account.");
     } finally {
       setBusyId(null);
     }
@@ -128,6 +146,7 @@ export default function AdminUsersPage() {
                   <th>Phone</th>
                   <th>Provider</th>
                   <th>Joined</th>
+                  <th className="text-right">Manage</th>
                 </tr>
               </thead>
               <tbody>
@@ -138,6 +157,9 @@ export default function AdminUsersPage() {
                         {u.name}
                         {me && u._id === me._id && (
                           <span className="ui-badge ui-badge-ghost ui-badge-xs">you</span>
+                        )}
+                        {u.banned && (
+                          <span className="ui-badge ui-badge-error ui-badge-sm">suspended</span>
                         )}
                       </p>
                       <p className="truncate text-xs opacity-55">{u.email}</p>
@@ -161,6 +183,26 @@ export default function AdminUsersPage() {
                     <td className="text-xs">{u.phone || "—"}</td>
                     <td className="text-xs capitalize opacity-70">{u.provider ?? "password"}</td>
                     <td className="whitespace-nowrap text-xs">{formatShortDate(u.createdAt)}</td>
+                    <td className="whitespace-nowrap text-right">
+                      <button
+                        type="button"
+                        className={`ui-button ui-button-sm gap-1.5 font-semibold ${
+                          u.banned ? "ui-button-success" : "ui-button-outline ui-button-error"
+                        }`}
+                        disabled={busyId === u._id || (me ? u._id === me._id : false) || u.role === "admin"}
+                        onClick={() => toggleBan(u)}
+                        title={
+                          u.role === "admin"
+                            ? "Admin accounts cannot be suspended"
+                            : u.banned
+                              ? "Restore this account"
+                              : "Suspend this account"
+                        }
+                      >
+                        {u.banned ? <ShieldCheck className="size-3.5" /> : <Ban className="size-3.5" />}
+                        {u.banned ? "Restore" : "Suspend"}
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

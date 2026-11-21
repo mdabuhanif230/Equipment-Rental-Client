@@ -12,6 +12,8 @@ export interface User {
   createdAt?: string;
   /** Only present on the admin user list (never on publicUser). */
   provider?: "password" | "google";
+  /** Suspended accounts are rejected by verifyToken on every protected request. */
+  banned?: boolean;
 }
 
 export type EquipmentStatus = "pending" | "approved" | "rejected";
@@ -70,6 +72,8 @@ export interface Booking {
   equipmentName: string;
   equipmentImage: string;
   ownerId: string;
+  ownerName?: string;
+  ownerEmail?: string;
   customerId: string;
   customerName: string;
   customerEmail: string;
