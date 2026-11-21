@@ -14,7 +14,7 @@ export default function ErrorPage({
   return (
     <div className="grid min-h-[70vh] place-items-center px-4 py-20">
       <div className="card-surface max-w-lg p-8 text-center shadow-sm">
-        <span className="badge badge-error badge-outline mb-5 gap-2 font-bold">
+        <span className="ui-badge ui-badge-error ui-badge-outline mb-5 gap-2 font-bold">
           <AlertTriangle className="size-4" /> Something broke
         </span>
         <h1 className="text-2xl font-extrabold tracking-tight">Unexpected application error</h1>
@@ -23,10 +23,10 @@ export default function ErrorPage({
         </p>
         {error.digest && <p className="font-mono text-xs opacity-50">Ref: {error.digest}</p>}
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <button type="button" onClick={reset} className="btn btn-primary btn-sm gap-2">
+          <button type="button" onClick={reset} className="ui-button ui-button-primary ui-button-sm gap-2">
             <RefreshCw className="size-4" /> Try again
           </button>
-          <Link href="/" className="btn btn-outline btn-sm gap-2">
+          <Link href="/" className="ui-button ui-button-outline ui-button-sm gap-2">
             <Home className="size-4" /> Back home
           </Link>
         </div>
