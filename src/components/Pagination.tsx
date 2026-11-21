@@ -22,7 +22,7 @@ export default function Pagination({ page, pages, onChange, busy = false }: Pagi
     <nav className="mt-6 flex items-center justify-center gap-1.5" aria-label="Pagination">
       <button
         type="button"
-        className="btn btn-outline btn-sm btn-circle"
+        className="ui-button ui-button-outline ui-button-sm ui-button-circle"
         disabled={page <= 1 || busy}
         onClick={() => onChange(page - 1)}
         aria-label="Previous page"
@@ -32,7 +32,7 @@ export default function Pagination({ page, pages, onChange, busy = false }: Pagi
 
       {start > 1 && (
         <>
-          <button type="button" className="btn btn-ghost btn-sm min-w-9" onClick={() => onChange(1)}>
+          <button type="button" className="ui-button ui-button-ghost ui-button-sm min-w-9" onClick={() => onChange(1)}>
             1
           </button>
           {start > 2 && <span className="px-1 opacity-50">…</span>}
@@ -43,7 +43,7 @@ export default function Pagination({ page, pages, onChange, busy = false }: Pagi
         <button
           key={p}
           type="button"
-          className={`btn btn-sm min-w-9 ${p === page ? "btn-primary" : "btn-ghost"}`}
+          className={`ui-button ui-button-sm min-w-9 ${p === page ? "ui-button-primary" : "ui-button-ghost"}`}
           onClick={() => onChange(p)}
           aria-current={p === page ? "page" : undefined}
         >
@@ -56,7 +56,7 @@ export default function Pagination({ page, pages, onChange, busy = false }: Pagi
           {end < pages - 1 && <span className="px-1 opacity-50">…</span>}
           <button
             type="button"
-            className="btn btn-ghost btn-sm min-w-9"
+            className="ui-button ui-button-ghost ui-button-sm min-w-9"
             onClick={() => onChange(pages)}
           >
             {pages}
@@ -66,7 +66,7 @@ export default function Pagination({ page, pages, onChange, busy = false }: Pagi
 
       <button
         type="button"
-        className="btn btn-outline btn-sm btn-circle"
+        className="ui-button ui-button-outline ui-button-sm ui-button-circle"
         disabled={page >= pages || busy}
         onClick={() => onChange(page + 1)}
         aria-label="Next page"
