@@ -15,6 +15,7 @@ export default function AdminBookingsPage() {
   const [data, setData] = useState<Paginated<Booking> | null>(null);
   const [page, setPage] = useState(1);
   const [loadedPage, setLoadedPage] = useState<number | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
   const loading = loadedPage !== page;
 
   useEffect(() => {
@@ -38,6 +39,23 @@ export default function AdminBookingsPage() {
   const paid = data?.items.filter((b) => b.paymentStatus === "paid").length ?? 0;
   const revenue = data?.items.reduce((sum, b) => sum + (b.paymentStatus === "paid" ? b.totalAmount : 0), 0) ?? 0;
 
+  const updateStatus = async (id: string, status: "cancelled" | "completed") => {
+    if (status === "cancelled" && !window.confirm("Cancel this unpaid booking and expire its open checkout session?")) return;
+    setBusyId(id);
+    try {
+      const { item } = await api.patch<{ item: Booking }>(`/admin/bookings/${id}/status`, { status });
+      setData((current) => current && ({
+        ...current,
+        items: current.items.map((booking) => booking._id === id ? item : booking),
+      }));
+      toast.success(status === "cancelled" ? "Booking cancelled." : "Rental marked as completed.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not update this booking.");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   return (
     <div>
       <PageHeader
@@ -46,8 +64,8 @@ export default function AdminBookingsPage() {
         actions={
           data && (
             <div className="flex gap-2">
-              <span className="badge badge-ghost badge-sm">{paid} paid on this page</span>
-              <span className="badge badge-success badge-sm">{formatCurrency(revenue)}</span>
+              <span className="ui-badge ui-badge-ghost ui-badge-sm">{paid} paid on this page</span>
+              <span className="ui-badge ui-badge-success ui-badge-sm">{formatCurrency(revenue)}</span>
             </div>
           )
         }
@@ -63,7 +81,13 @@ export default function AdminBookingsPage() {
         />
       ) : (
         <>
-          <BookingsTable variant="admin" items={data.items} />
+          <BookingsTable
+            variant="admin"
+            items={data.items}
+            busyId={busyId}
+            onCancel={(id) => void updateStatus(id, "cancelled")}
+            onComplete={(id) => void updateStatus(id, "completed")}
+          />
           <Pagination page={data.page} pages={data.pages} onChange={setPage} busy={loading} />
         </>
       )}
