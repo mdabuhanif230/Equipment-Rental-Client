@@ -51,7 +51,7 @@ export default function OwnerBookingsPage() {
         title="Bookings on your equipment"
         subtitle="Confirm handovers by marking paid rentals as completed."
         actions={
-          <Link href="/dashboard/owner/equipment" className="btn btn-outline btn-sm font-semibold">
+          <Link href="/dashboard/owner/equipment" className="ui-button ui-button-outline ui-button-sm font-semibold">
             My equipment
           </Link>
         }
@@ -65,7 +65,7 @@ export default function OwnerBookingsPage() {
           title="No bookings yet"
           description="When a customer books one of your approved listings, it appears here for handover."
           action={
-            <Link href="/dashboard/owner/equipment" className="btn btn-primary btn-sm mt-2">
+            <Link href="/dashboard/owner/equipment" className="ui-button ui-button-primary ui-button-sm mt-2">
               Manage listings
             </Link>
           }
