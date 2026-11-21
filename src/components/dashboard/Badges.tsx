@@ -21,12 +21,12 @@ const EQUIPMENT_TONE: Record<EquipmentStatus, string> = {
 
 /** Booking status capsule — wording and colour stay identical in every table. */
 export function StatusBadge({ status }: { status: BookingStatus }) {
-  return <span className={`ui-badge ui-badge-sm capitalize ${BOOKING_TONE[status] ?? "ui-badge-ghost"}`}>{status}</span>;
+  return <span className={`ui-badge ui-badge-sm whitespace-nowrap capitalize ${BOOKING_TONE[status] ?? "ui-badge-ghost"}`}>{status}</span>;
 }
 
 export function PaymentBadge({ status }: { status: PaymentStatus }) {
   return (
-    <span className={`ui-badge ui-badge-sm capitalize ui-badge-outline ${PAYMENT_TONE[status] ?? "ui-badge-ghost"}`}>
+    <span className={`ui-badge ui-badge-sm whitespace-nowrap capitalize ui-badge-outline ${PAYMENT_TONE[status] ?? "ui-badge-ghost"}`}>
       {status}
     </span>
   );

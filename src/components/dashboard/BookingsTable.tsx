@@ -41,7 +41,7 @@ export default function BookingsTable({
 
   return (
     <div className="table-surface scroll-thin overflow-x-auto">
-      <table className="ui-table ui-table-sm">
+      <table className="ui-table ui-table-sm min-w-[900px]">
         <thead>
           <tr className="bg-base-200 text-xs uppercase tracking-wide">
             {HEADERS[variant].map((h) => (
