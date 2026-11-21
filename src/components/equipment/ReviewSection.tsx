@@ -41,7 +41,7 @@ export default function ReviewSection({ equipmentId }: ReviewSectionProps) {
 
   // A review can only be written for a completed, not-yet-reviewed rental
   useEffect(() => {
-    if (!user) return;
+    if (user?.role !== "customer") return;
     let active = true;
     api
       .get<{ items: Booking[] }>("/bookings/my?limit=50")
@@ -144,7 +144,7 @@ export default function ReviewSection({ equipmentId }: ReviewSectionProps) {
                 onClick={() => setRating(n)}
                 onMouseEnter={() => setHovered(n)}
                 onMouseLeave={() => setHovered(0)}
-                className="btn btn-ghost btn-xs btn-circle p-1"
+                className="ui-button ui-button-ghost ui-button-xs ui-button-circle p-1"
                 aria-label={`${n} star${n > 1 ? "s" : ""}`}
               >
                 <Star
@@ -160,12 +160,12 @@ export default function ReviewSection({ equipmentId }: ReviewSectionProps) {
             rows={3}
             maxLength={1000}
             placeholder="How was the equipment and the handover?"
-            className="textarea textarea-bordered mt-3 w-full"
+            className="ui-textarea ui-textarea-bordered mt-3 w-full"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />
-          <button type="submit" className="btn btn-primary btn-sm mt-3 font-bold" disabled={submitting}>
-            {submitting ? <span className="loading loading-spinner loading-sm" /> : "Post review"}
+          <button type="submit" className="ui-button ui-button-primary ui-button-sm mt-3 font-bold" disabled={submitting}>
+            {submitting ? <span className="ui-loading ui-loading-spinner ui-loading-sm" /> : "Post review"}
           </button>
         </form>
       )}
