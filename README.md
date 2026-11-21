@@ -3,7 +3,7 @@
 **Project name:** RentGear
 **Purpose:** The customer-facing web application for an equipment rental marketplace: customers search and rent verified tools and machines, owners list their gear and track earnings, and administrators moderate the whole platform — with bookings paid through Stripe.
 
-- **Live URL:** _deploy this client to Vercel and set `NEXT_PUBLIC_API_URL` to your hosted API (see [Environment variables](#environment-variables))._
+- **Live URL:** _Not deployed yet — add the production client URL after deployment._
 - **API / backend repository:** [`../equipment-rental-server`](../equipment-rental-server) (Express + MongoDB + Stripe)
 - **Local dev URL:** http://localhost:3000
 
@@ -32,10 +32,10 @@
 - **Admin dashboard** — six KPI cards, bookings-per-month bar chart and users-by-role donut.
 - **User management** — search, role filter and inline role changes (customer ↔ owner ↔ admin).
 - **Moderation** — approve or reject equipment listings with status filters.
-- **All bookings** — platform-wide table with payment status.
+- **All bookings** — platform-wide table with payment status and safe admin actions to cancel unpaid pending bookings or complete paid rentals.
 
 ### Platform
-- **Auth:** email/password register & login (uppercase + lowercase + minimum 6 characters, enforced on both sides), Google social login (Google users always receive the `customer` role), JWT access tokens kept in `localStorage` with a silent `/auth/me` refresh — reloading a private page never bounces a logged-in user to `/login`.
+- **Auth:** Better Auth email/password register & login (uppercase + lowercase + minimum 6 characters), Google social login (Google users default to `customer`), and Better Auth JWTs used for protected API requests. Sessions refresh on reload without bouncing a logged-in user to `/login`.
 - **RBAC:** `customer`, `owner` and `admin` roles are checked by `verifyToken` / `verifyRenter` / `verifyOwner` / `verifyAdmin` on the API, and mirrored by client-side route guards.
 - **UX:** toasts for every action, loading skeletons, dedicated loading/error/404 pages, responsive layout down to mobile, and a persisted **dark/light theme toggle** (stored in `localStorage`, applied before first paint).
 - **Design system:** one brand palette (teal + amber), one type scale (`.section-title`, `.eyebrow`, `.section-subtitle`), consistent cards, tables and buttons across every page.
@@ -53,7 +53,7 @@
 | Charts | `recharts` |
 | Icons | `lucide-react` |
 | Notifications | `react-hot-toast` |
-| HTTP | `fetch` (wrapped in `src/lib/api.ts` with Bearer token handling) |
+| HTTP | Better Auth session cookies plus `fetch` (wrapped in `src/lib/api.ts` with JWT Bearer handling for protected API requests) |
 
 ---
 
@@ -78,10 +78,15 @@ The Express API must be running (default `http://localhost:5000`) and its `CLIEN
 | Key | Required | Purpose |
 | --- | --- | --- |
 | `NEXT_PUBLIC_API_URL` | ✅ | Base URL of the API, e.g. `http://localhost:5000/api` |
-| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | ⬜ | OAuth client id for the Google sign-in button (must match the server's `GOOGLE_CLIENT_ID`) |
+| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | ⬜ | OAuth Web Client ID for Google sign-in (must match the server's `GOOGLE_CLIENT_ID`; no client secret is needed for ID-token sign-in) |
+| `NEXT_PUBLIC_IMGBB_API_KEY` | ⬜ | ImgBB key for owner equipment and profile photo uploads |
 | `NEXT_PUBLIC_SITE_URL` | ⬜ | Public URL of this app |
 
-All frontend configuration is read from these env vars — no secrets are hard-coded, and MongoDB credentials live only on the server.
+All frontend configuration is read from these env vars. Do not put database credentials, Stripe
+secret keys, OAuth client secrets, or other server secrets in the client environment. MongoDB and
+Stripe credentials belong only in the server's `.env`.
+
+The ImgBB key is a public upload key used for direct equipment and profile photo uploads. If it is omitted, users can still submit an existing image URL, but local file uploads are unavailable.
 
 ### Scripts
 
