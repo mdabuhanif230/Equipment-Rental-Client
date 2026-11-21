@@ -64,7 +64,7 @@ export default function OwnerEquipmentPage() {
         title="My Equipment"
         subtitle="Add, edit and remove listings. Edited items return to the admin approval queue."
         actions={
-          <button type="button" className="btn btn-primary btn-sm gap-2 font-semibold" onClick={openCreate}>
+          <button type="button" className="ui-button ui-button-primary ui-button-sm gap-2 font-semibold" onClick={openCreate}>
             <Plus className="size-4" /> Add equipment
           </button>
         }
@@ -78,7 +78,7 @@ export default function OwnerEquipmentPage() {
           title="You have not listed anything yet"
           description="Publish your first item and it will go live as soon as an admin approves it."
           action={
-            <button type="button" className="btn btn-primary btn-sm mt-2 gap-2" onClick={openCreate}>
+            <button type="button" className="ui-button ui-button-primary ui-button-sm mt-2 gap-2" onClick={openCreate}>
               <Plus className="size-4" /> Add equipment
             </button>
           }
@@ -86,7 +86,7 @@ export default function OwnerEquipmentPage() {
       ) : (
         <>
           <div className="table-surface scroll-thin overflow-x-auto">
-            <table className="table table-sm">
+            <table className="ui-table ui-table-sm">
               <thead>
                 <tr className="bg-base-200 text-xs uppercase tracking-wide">
                   <th>Equipment</th>
@@ -121,14 +121,14 @@ export default function OwnerEquipmentPage() {
                       <div className="flex justify-end gap-1.5">
                         <button
                           type="button"
-                          className="btn btn-ghost btn-xs gap-1"
+                          className="ui-button ui-button-ghost ui-button-xs gap-1"
                           onClick={() => openEdit(item)}
                         >
                           <Pencil className="size-3.5" /> Edit
                         </button>
                         <button
                           type="button"
-                          className="btn btn-ghost btn-xs gap-1 text-error"
+                          className="ui-button ui-button-ghost ui-button-xs gap-1 text-error"
                           disabled={busyId === item._id}
                           onClick={() => remove(item)}
                         >
