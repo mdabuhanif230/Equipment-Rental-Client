@@ -1,8 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import toast from "react-hot-toast";
-import { PackageOpen, Pencil, Plus, Trash2 } from "lucide-react";
+import { Eye, PackageOpen, Pencil, Plus, Trash2 } from "lucide-react";
 import PageHeader from "@/components/dashboard/PageHeader";
 import { EquipmentStatusBadge } from "@/components/dashboard/Badges";
 import EquipmentFormModal from "@/components/dashboard/EquipmentFormModal";
@@ -34,11 +35,6 @@ export default function OwnerEquipmentPage() {
     load();
   }, [load]);
 
-  const openCreate = () => {
-    setEditing(undefined);
-    setModalOpen(true);
-  };
-
   const openEdit = (item: Equipment) => {
     setEditing(item);
     setModalOpen(true);
@@ -64,9 +60,9 @@ export default function OwnerEquipmentPage() {
         title="My Equipment"
         subtitle="Add, edit and remove listings. Edited items return to the admin approval queue."
         actions={
-          <button type="button" className="ui-button ui-button-primary ui-button-sm gap-2 font-semibold" onClick={openCreate}>
+          <Link href="/dashboard/owner/add-equipment" className="ui-button ui-button-primary ui-button-sm gap-2 font-semibold">
             <Plus className="size-4" /> Add equipment
-          </button>
+          </Link>
         }
       />
 
@@ -78,9 +74,9 @@ export default function OwnerEquipmentPage() {
           title="You have not listed anything yet"
           description="Publish your first item and it will go live as soon as an admin approves it."
           action={
-            <button type="button" className="ui-button ui-button-primary ui-button-sm mt-2 gap-2" onClick={openCreate}>
+            <Link href="/dashboard/owner/add-equipment" className="ui-button ui-button-primary ui-button-sm mt-2 gap-2">
               <Plus className="size-4" /> Add equipment
-            </button>
+            </Link>
           }
         />
       ) : (
@@ -119,6 +115,12 @@ export default function OwnerEquipmentPage() {
                     <td className="whitespace-nowrap text-xs">{formatShortDate(item.createdAt)}</td>
                     <td>
                       <div className="flex justify-end gap-1.5">
+                        <Link
+                          href={`/equipment/${item._id}`}
+                          className="ui-button ui-button-ghost ui-button-xs gap-1"
+                        >
+                          <Eye className="size-3.5" /> View
+                        </Link>
                         <button
                           type="button"
                           className="ui-button ui-button-ghost ui-button-xs gap-1"
