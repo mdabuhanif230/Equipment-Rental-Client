@@ -1,4 +1,4 @@
-import type { AuthResponse, Paginated } from "./types";
+import type { Paginated } from "./types";
 
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:5000/api";
@@ -37,6 +37,25 @@ export function storeSession(token: string, user: unknown): void {
   localStorage.setItem(USER_KEY, JSON.stringify(user));
 }
 
+export async function refreshAuthToken(): Promise<string> {
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}/auth/token`, {
+      credentials: "include",
+      cache: "no-store",
+    });
+  } catch {
+    throw new ApiError("Could not connect to the service. Check your connection and try again.", 0);
+  }
+
+  const data = (await res.json().catch(() => null)) as { token?: string; message?: string } | null;
+  if (!res.ok || !data?.token) {
+    throw new ApiError(data?.message || "Your session has expired. Please sign in again.", res.status);
+  }
+  localStorage.setItem(TOKEN_KEY, data.token);
+  return data.token;
+}
+
 export function updateUserCache(user: unknown): void {
   localStorage.setItem(USER_KEY, JSON.stringify(user));
 }
@@ -54,34 +73,71 @@ interface RequestOptions {
   body?: unknown;
   auth?: boolean;
   cache?: RequestCache;
+  headers?: Record<string, string>;
 }
 
 async function request<T>(path: string, method: Method, options: RequestOptions = {}): Promise<T> {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  const token = getToken();
-  if (options.auth !== false && token) headers.Authorization = `Bearer ${token}`;
+  const token = options.auth === false ? null : getToken();
+  const send = async (accessToken: string | null) => {
+    const headers: Record<string, string> = {
+      ...options.headers,
+      "Content-Type": "application/json",
+    };
+    if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
+    return fetch(`${API_URL}${path}`, {
+      method,
+      headers,
+      credentials: "include",
+      cache: options.cache ?? "no-store",
+      body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+    });
+  };
 
-  const res = await fetch(`${API_URL}${path}`, {
-    method,
-    headers,
-    cache: options.cache ?? "no-store",
-    body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
-  });
+  let res: Response;
+  try {
+    res = await send(token);
+  } catch {
+    throw new ApiError("Could not connect to the service. Check your connection and try again.", 0);
+  }
+
+  if (res.status === 401 && options.auth !== false && token) {
+    try {
+      const refreshedToken = await refreshAuthToken();
+      if (refreshedToken !== token) {
+        try {
+          res = await send(refreshedToken);
+        } catch {
+          throw new ApiError("Could not connect to the service. Check your connection and try again.", 0);
+        }
+      }
+    } catch (error) {
+      if (!(error instanceof ApiError) || error.status === 0) throw error;
+    }
+  }
 
   let data: unknown = null;
   const text = await res.text();
+  const isHtml = res.headers.get("content-type")?.includes("text/html") ?? false;
   if (text) {
     try {
       data = JSON.parse(text);
     } catch {
-      data = { message: text };
+      data = null;
     }
   }
 
   if (!res.ok) {
-    const message =
-      (data as { message?: string } | null)?.message || `Request failed (${res.status})`;
-    if (res.status === 401 && typeof window !== "undefined") clearSession();
+    const responseMessage =
+      data && typeof data === "object" && "message" in data &&
+      typeof data.message === "string"
+        ? data.message
+        : "";
+    const message = isHtml || !responseMessage
+      ? res.status === 404
+        ? "This service is unavailable right now. Please try again later."
+        : "We couldn't complete your request. Please try again."
+      : responseMessage;
+    if (res.status === 401 && options.auth !== false && typeof window !== "undefined") clearSession();
     throw new ApiError(message, res.status);
   }
   return data as T;
@@ -98,4 +154,4 @@ export const api = {
   delete: <T,>(path: string, options?: RequestOptions) => request<T>(path, "DELETE", options),
 };
 
-export type { AuthResponse, Paginated };
+export type { Paginated };
