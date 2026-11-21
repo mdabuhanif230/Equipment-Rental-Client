@@ -69,17 +69,17 @@ export default function AdminDashboardPage() {
         subtitle="Platform-wide KPIs, live MongoDB aggregations and moderation queues."
         actions={
           <>
-            <Link href="/dashboard/admin/equipment" className="btn btn-outline btn-sm font-semibold">
+            <Link href="/dashboard/admin/equipment" className="ui-button ui-button-outline ui-button-sm font-semibold">
               Approval queue
             </Link>
-            <Link href="/dashboard/admin/users" className="btn btn-primary btn-sm font-semibold">
+            <Link href="/dashboard/admin/users" className="ui-button ui-button-primary ui-button-sm font-semibold">
               Manage users
             </Link>
           </>
         }
       />
 
-      {error && <div className="alert alert-error mb-5 text-sm">{error}</div>}
+      {error && <div className="ui-alert ui-alert-error mb-5 text-sm">{error}</div>}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
         <StatCard icon={Users} label="Total users" value={stats?.totalUsers ?? (loading ? "…" : 0)} />
