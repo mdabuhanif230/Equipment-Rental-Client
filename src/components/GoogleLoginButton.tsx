@@ -1,94 +1,200 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useAuth } from "@/context/AuthContext";
+import type { Role } from "@/lib/types";
+
+const GOOGLE_IDENTITY_SCRIPT = "https://accounts.google.com/gsi/client";
+const dashboardPath: Record<Role, string> = {
+  customer: "/dashboard/customer",
+  owner: "/dashboard/owner",
+  admin: "/dashboard/admin",
+};
+
+interface GoogleCredentialResponse {
+  credential: string;
+}
+
+interface GoogleIdentity {
+  accounts: {
+    id: {
+      initialize: (options: {
+        client_id: string;
+        callback: (response: GoogleCredentialResponse) => void;
+        use_fedcm_for_button: boolean;
+        button_auto_select: boolean;
+      }) => void;
+      renderButton: (
+        element: HTMLElement,
+        options: {
+          type: "standard";
+          theme: "outline";
+          size: "large";
+          shape: "rectangular";
+          logo_alignment: "left";
+          text: "continue_with" | "signup_with";
+          width: number;
+        },
+      ) => void;
+    };
+  };
+}
 
 declare global {
   interface Window {
-    google?: {
-      accounts: {
-        id: {
-          initialize: (config: {
-            client_id: string;
-            callback: (response: { credential: string }) => void;
-          }) => void;
-          renderButton: (parent: HTMLElement, options: Record<string, unknown>) => void;
-        };
-      };
-    };
+    google?: GoogleIdentity;
+    __rentgearGoogleClientId?: string;
+    __rentgearGoogleCredentialHandler?: ((credential: string) => void) | null;
   }
 }
 
-const GIS_SRC = "https://accounts.google.com/gsi/client";
-
-/**
- * Google social login using Google Identity Services.
- * The id_token is posted to POST /api/auth/google on the server.
- */
-export default function GoogleLoginButton({ text = "continue_with" }: { text?: string }) {
+export default function GoogleLoginButton({
+  text = "continue_with",
+  signupRole,
+}: {
+  text?: "continue_with" | "signup_with";
+  signupRole?: Exclude<Role, "admin">;
+}) {
   const { loginWithGoogle } = useAuth();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [ready, setReady] = useState(false);
+  const router = useRouter();
+  const buttonRef = useRef<HTMLDivElement>(null);
+  const [busy, setBusy] = useState(false);
+  const [showSetupHint, setShowSetupHint] = useState(false);
+  const [scriptFailed, setScriptFailed] = useState(false);
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+  const busyRef = useRef(false);
+  const needsSignupRole = text === "signup_with";
+  const canContinue = !needsSignupRole || Boolean(signupRole);
+
+  const handleCredential = useCallback(async (credential: string) => {
+    if (needsSignupRole && !signupRole) {
+      toast.error("Choose your role before signing up with Google.");
+      return;
+    }
+    if (busyRef.current) return;
+    busyRef.current = true;
+    setBusy(true);
+    try {
+      const user = await loginWithGoogle(credential, signupRole);
+      router.replace(dashboardPath[user.role]);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Google sign-in failed.");
+    } finally {
+      busyRef.current = false;
+      setBusy(false);
+    }
+  }, [loginWithGoogle, needsSignupRole, router, signupRole]);
+  const handleCredentialRef = useRef(handleCredential);
 
   useEffect(() => {
-    if (!clientId) return;
+    handleCredentialRef.current = handleCredential;
+  }, [handleCredential]);
 
-    const handleCredential = async (response: { credential: string }) => {
-      try {
-        await loginWithGoogle(response.credential);
-      } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Google sign-in failed");
-      }
+  useEffect(() => {
+    if (!clientId || !canContinue) return;
+    let cancelled = false;
+    let script: HTMLScriptElement | null = null;
+    const currentCredentialHandler = (credential: string) => {
+      handleCredentialRef.current(credential);
     };
+    window.__rentgearGoogleCredentialHandler = currentCredentialHandler;
 
-    const render = () => {
-      if (!window.google || !containerRef.current) return;
-      window.google.accounts.id.initialize({
-        client_id: clientId,
-        callback: handleCredential,
-      });
-      window.google.accounts.id.renderButton(containerRef.current, {
+    const renderGoogleButton = () => {
+      const element = buttonRef.current;
+      if (cancelled || !element || !window.google) return;
+      if (!window.__rentgearGoogleClientId) {
+        window.google.accounts.id.initialize({
+          client_id: clientId,
+          use_fedcm_for_button: true,
+          button_auto_select: false,
+          callback: ({ credential }) => {
+            if (credential) window.__rentgearGoogleCredentialHandler?.(credential);
+            else toast.error("Google did not return a sign-in credential.");
+          },
+        });
+        window.__rentgearGoogleClientId = clientId;
+      } else if (window.__rentgearGoogleClientId !== clientId) {
+        toast.error("Google sign-in settings changed. Reload the page and try again.");
+        return;
+      }
+      element.replaceChildren();
+      window.google.accounts.id.renderButton(element, {
+        type: "standard",
         theme: "outline",
         size: "large",
-        width: 340,
-        text,
         shape: "rectangular",
+        logo_alignment: "left",
+        text,
+        width: Math.min(400, Math.max(120, Math.floor(element.getBoundingClientRect().width))),
       });
-      setReady(true);
+    };
+    const handleScriptError = () => {
+      if (!cancelled) setScriptFailed(true);
     };
 
     if (window.google) {
-      render();
-      return;
+      renderGoogleButton();
+    } else {
+      script = document.querySelector<HTMLScriptElement>(`script[src="${GOOGLE_IDENTITY_SCRIPT}"]`);
+      if (!script) {
+        script = document.createElement("script");
+        script.src = GOOGLE_IDENTITY_SCRIPT;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+      }
+      script.addEventListener("load", renderGoogleButton);
+      script.addEventListener("error", handleScriptError);
     }
 
-    const script = document.createElement("script");
-    script.src = GIS_SRC;
-    script.async = true;
-    script.defer = true;
-    script.onload = render;
-    document.head.appendChild(script);
-
     return () => {
-      script.onload = null;
+      cancelled = true;
+      if (window.__rentgearGoogleCredentialHandler === currentCredentialHandler) {
+        window.__rentgearGoogleCredentialHandler = null;
+      }
+      script?.removeEventListener("load", renderGoogleButton);
+      script?.removeEventListener("error", handleScriptError);
     };
-  }, [clientId, loginWithGoogle, text]);
-
-  if (!clientId) {
-    return (
-      <div className="alert alert-ghost text-xs">
-        Set <code className="font-bold">NEXT_PUBLIC_GOOGLE_CLIENT_ID</code> in .env.local to enable
-        Google sign-in.
-      </div>
-    );
-  }
+  }, [canContinue, clientId, text]);
 
   return (
-    <div className="flex flex-col items-center gap-2">
-      <div ref={containerRef} className="min-h-10" />
-      {!ready && <span className="loading loading-spinner loading-sm text-primary" />}
+    <div className="w-full">
+      {clientId && canContinue ? (
+        <>
+          <div ref={buttonRef} className="flex min-h-11 w-full justify-center" aria-busy={busy} />
+          {busy && <p className="mt-2 text-center text-xs text-base-content/65" role="status">Connecting to Google…</p>}
+          {scriptFailed && (
+            <p className="mt-2 text-center text-xs text-error" role="alert">
+              Google sign-in could not load. Check your connection and try again.
+            </p>
+          )}
+        </>
+      ) : (
+        <button
+          type="button"
+          onClick={() => {
+            if (!canContinue) return;
+            setShowSetupHint(true);
+          }}
+          disabled={!canContinue}
+          className="flex h-11 w-full items-center justify-center gap-3 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <span>
+            {!canContinue
+              ? "Choose a role above to sign up with Google"
+              : text === "signup_with"
+                ? "Sign up with Google"
+                : "Continue with Google"}
+          </span>
+        </button>
+      )}
+      {showSetupHint && (
+        <p className="mt-2 text-center text-xs leading-relaxed text-base-content/65" role="status">
+          Google sign-in needs the same OAuth Web Client ID in the client and server environments. Restart both apps after configuring it.
+        </p>
+      )}
     </div>
   );
 }
