@@ -74,7 +74,14 @@ export default function FavoritesPage() {
                   <td className="min-w-64">
                     <div className="flex items-center gap-3">
                       <div className="relative size-14 shrink-0 overflow-hidden rounded-xl bg-base-200">
-                        <Image src={item.image || "/images/placeholder.png"} alt="" fill sizes="56px" className="object-cover" />
+                        <Image
+                          src={item.image || "/images/placeholder.png"}
+                          alt=""
+                          fill
+                          sizes="56px"
+                          unoptimized={item.image?.includes("i.ibb.co") || false}
+                          className="object-cover"
+                        />
                       </div>
                       <div className="min-w-0">
                         <Link href={`/equipment/${item._id}`} className="font-bold hover:text-primary">{item.name}</Link>

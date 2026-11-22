@@ -223,6 +223,19 @@ export default function EquipmentFormModal({ initial, admin = false, onClose, on
           <div className="ui-form-control sm:col-span-2">
             <label htmlFor="equipment-image-url" className="ui-label py-1 text-xs font-semibold opacity-70">Equipment image *</label>
             <input id="equipment-image-url" className={field} value={form.image} onChange={set("image")} placeholder="Paste an image URL or upload a file" required />
+            {/^https?:\/\//i.test(form.image) && (
+              <div className="mt-3 overflow-hidden rounded-xl border border-base-300 bg-base-200">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={form.image}
+                  alt="Equipment preview"
+                  className="h-40 w-full object-cover"
+                  onError={(event) => {
+                    event.currentTarget.style.display = "none";
+                  }}
+                />
+              </div>
+            )}
             <span className="mt-2 flex flex-wrap items-center gap-3">
               <label className={`ui-button ui-button-outline ui-button-sm gap-2 ${uploading ? "pointer-events-none opacity-60" : "cursor-pointer"}`}>
                 {uploading ? <LoaderCircle className="size-4 animate-spin" /> : <ImagePlus className="size-4" />}

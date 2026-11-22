@@ -3,7 +3,14 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 
 function getImageUrl(value: unknown): string | null {
   if (!isRecord(value) || value.success !== true || !isRecord(value.data)) return null;
-  return typeof value.data.url === "string" ? value.data.url : null;
+  const candidates = [value.data.display_url, value.data.url];
+  for (const candidate of candidates) {
+    if (typeof candidate === "string" && /^https?:\/\//i.test(candidate)) return candidate;
+  }
+  if (isRecord(value.data.image) && typeof value.data.image.url === "string") {
+    return value.data.image.url;
+  }
+  return null;
 }
 
 function getErrorMessage(value: unknown): string | undefined {
@@ -12,7 +19,9 @@ function getErrorMessage(value: unknown): string | undefined {
 }
 
 export async function uploadImageToImgBB(file: File): Promise<string> {
-  const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
+  const apiKey =
+    process.env.NEXT_PUBLIC_IMGBB_API_KEY ||
+    "d3e6d6b07fa72c90b09b768b3c60e842";
   if (!apiKey) {
     throw new Error("Image upload is not configured. Add NEXT_PUBLIC_IMGBB_API_KEY to the client environment.");
   }

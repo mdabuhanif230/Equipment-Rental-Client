@@ -156,6 +156,7 @@ function EquipmentDetails({ id }: { id: string }) {
                   fill
                   priority
                   sizes="(min-width: 1024px) 58vw, 100vw"
+                  unoptimized={item.image.includes("i.ibb.co")}
                   className="object-cover"
                 />
               ) : (
