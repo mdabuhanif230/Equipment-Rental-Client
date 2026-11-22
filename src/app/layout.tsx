@@ -26,6 +26,13 @@ export const metadata: Metadata = {
   },
   description:
     "RentGear is a modern equipment rental platform: customers rent verified tools and machines, owners earn from their gear, and admins manage the whole marketplace.",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
