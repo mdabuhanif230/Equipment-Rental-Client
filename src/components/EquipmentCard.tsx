@@ -32,13 +32,14 @@ export default function EquipmentCard({
     >
       <Link href={`/equipment/${item._id}`} className="relative block aspect-video overflow-hidden">
         {item.image?.startsWith("http") ? (
-          <Image
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
             src={item.image}
             alt={item.name}
-            fill
-            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-            unoptimized={item.image.includes("i.ibb.co")}
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            onError={(event) => {
+              event.currentTarget.src = "/images/placeholder.png";
+            }}
           />
         ) : (
           // eslint-disable-next-line @next/next/no-img-element -- local PNG fallback

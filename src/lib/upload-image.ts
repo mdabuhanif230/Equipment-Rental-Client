@@ -1,3 +1,5 @@
+import { API_URL } from "./api";
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
 
@@ -52,4 +54,19 @@ export async function uploadImageToImgBB(file: File): Promise<string> {
   }
 
   return imageUrl;
+}
+
+export async function resolveEquipmentImageUrl(url: string): Promise<string> {
+  const trimmed = url.trim();
+  if (!/^https?:\/\/(?:ibb\.co(?:\.com)?|www\.ibb\.co(?:\.com)?)\//i.test(trimmed)) {
+    return trimmed;
+  }
+  const response = await fetch(`${API_URL}/images/resolve`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url: trimmed }),
+  }).catch(() => null);
+  if (!response?.ok) return trimmed;
+  const data = await response.json().catch(() => null);
+  return isRecord(data) && typeof data.url === "string" ? data.url : trimmed;
 }

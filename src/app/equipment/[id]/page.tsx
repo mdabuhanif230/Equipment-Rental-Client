@@ -150,14 +150,14 @@ function EquipmentDetails({ id }: { id: string }) {
           <div className="card-surface overflow-hidden">
             <div className="relative aspect-video">
               {item.image?.startsWith("http") ? (
-                <Image
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
                   src={item.image}
                   alt={item.name}
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 58vw, 100vw"
-                  unoptimized={item.image.includes("i.ibb.co")}
-                  className="object-cover"
+                  className="h-full w-full object-cover"
+                  onError={(event) => {
+                    event.currentTarget.src = "/images/placeholder.png";
+                  }}
                 />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element -- local PNG fallback

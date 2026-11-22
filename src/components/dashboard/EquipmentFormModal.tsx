@@ -4,7 +4,7 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import toast from "react-hot-toast";
 import { ImagePlus, LoaderCircle } from "lucide-react";
 import { api } from "@/lib/api";
-import { uploadImageToImgBB } from "@/lib/upload-image";
+import { resolveEquipmentImageUrl, uploadImageToImgBB } from "@/lib/upload-image";
 import type { Equipment, RentalType } from "@/lib/types";
 
 interface EquipmentFormModalProps {
@@ -222,7 +222,21 @@ export default function EquipmentFormModal({ initial, admin = false, onClose, on
 
           <div className="ui-form-control sm:col-span-2">
             <label htmlFor="equipment-image-url" className="ui-label py-1 text-xs font-semibold opacity-70">Equipment image *</label>
-            <input id="equipment-image-url" className={field} value={form.image} onChange={set("image")} placeholder="Paste an image URL or upload a file" required />
+            <input
+              id="equipment-image-url"
+              className={field}
+              value={form.image}
+              onChange={set("image")}
+              onBlur={async (event) => {
+                const resolved = await resolveEquipmentImageUrl(event.target.value);
+                if (resolved !== event.target.value) {
+                  setForm((current) => ({ ...current, image: resolved }));
+                  toast.success("ImgBB share link converted to a direct image URL.");
+                }
+              }}
+              placeholder="Paste an image URL or upload a file"
+              required
+            />
             {/^https?:\/\//i.test(form.image) && (
               <div className="mt-3 overflow-hidden rounded-xl border border-base-300 bg-base-200">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
