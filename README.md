@@ -1,147 +1,192 @@
-# RentGear — Equipment Rental Platform (Client)
+# RentGear - Equipment Rental Platform
 
-**Project name:** RentGear
-**Purpose:** The customer-facing web application for an equipment rental marketplace: customers search and rent verified tools and machines, owners list their gear and track earnings, and administrators moderate the whole platform — with bookings paid through Stripe.
+RentGear is a full-stack equipment rental marketplace where customers discover and book verified
+equipment, owners publish listings and track earnings, and administrators moderate users and
+rental activity.
 
-- **Live URL:** https://equipment-rental-client-nine.vercel.app
-- **Live API:** https://equipment-rental-server-two.vercel.app
-- **API / backend repository:** https://github.com/mdabuhanif230/Equipment-Rental-Server (local: [`../equipment-rental-server`](../equipment-rental-server))
-- **Client repository:** https://github.com/mdabuhanif230/-Equipment-Rental-Client-
-- **Local dev URL:** http://localhost:3000
+## Live Project
 
-### Submission details (Assignment 9 — Category 003)
-- **Admin Email:** `mhabuhanif230@gmail.com`
-- **Admin Password:** `Hanif15387126` _(demo credential for evaluator only)_
-- **Live Site Link:** https://equipment-rental-client-nine.vercel.app
-- **GitHub Repository (server):** https://github.com/mdabuhanif230/Equipment-Rental-Server
-- **GitHub Repository (client):** https://github.com/mdabuhanif230/-Equipment-Rental-Client-
+- **Website:** https://rentgear-ivory.vercel.app
+- **API:** https://equipment-rental-server.onrender.com
+- **API Health:** https://equipment-rental-server.onrender.com/api/health
+- **Client Repository:** https://github.com/mdabuhanif230/Equipment-Rental-Client
+- **Server Repository:** https://github.com/mdabuhanif230/Equipment-Rental-Server
 
----
+## Assignment Submission
 
-## Key features
-
-### Public
-- **Animated home page** — hero banner with live search, 6 featured listings, category tiles, "why choose us", "how it works", a community review wall (≥4 reviews) and an owner recruitment band, all animated with Framer Motion.
-- **All Equipment** — server-side search, location, category, rental-type, price-range and availability filters plus sorting (newest / price asc / price desc) and windowed pagination. Every filter lives in the URL, so filtered views are shareable and refresh-safe.
-- **Footer** — contact details and a social link using the current X brand mark (not the retired Twitter bird).
-- **Equipment details** — gallery, spec sheet, rental terms, reviews with a star summary, and a live availability/price calculator.
-
-### Customers (private)
-- **Booking modal** — start/end date, quantity, phone, delivery address and notes; the estimated total is fetched from the availability endpoint before anything is sent.
-- **Stripe checkout** — creating a booking redirects to Stripe Checkout (35-minute stock hold), with dedicated **payment success** and **payment cancel** pages that verify the payment *on the server*.
-- **Customer dashboard** — KPI cards, a booking-status donut chart, bookings table (pay / cancel / view) and a favorites grid.
-- **Favorites** — heart any listing from the catalogue or the details page.
-- **Reviews** — only customers with a completed rental of that item can post a review (one per booking).
-
-### Owners
-- **Owner dashboard** — total listings, completed rentals, total earnings and a monthly earnings area chart fed by real MongoDB aggregations.
-- **Listing management** — create, edit and delete equipment; new/edited items go back to `pending` until an admin approves them.
-- **Bookings table** — mark paid, confirmed rentals as completed.
-
-### Admins
-- **Admin dashboard** — six KPI cards, bookings-per-month bar chart and users-by-role donut.
-- **User management** — search, role filter and inline role changes (customer ↔ owner ↔ admin).
-- **Moderation** — approve or reject equipment listings with status filters.
-- **All bookings** — platform-wide table with payment status and safe admin actions to cancel unpaid pending bookings or complete paid rentals.
-
-### Platform
-- **Auth:** Better Auth email/password register & login (uppercase + lowercase + minimum 6 characters), Google social login (Google users default to `customer`), and Better Auth JWTs used for protected API requests. Sessions refresh on reload without bouncing a logged-in user to `/login`.
-- **RBAC:** `customer`, `owner` and `admin` roles are checked by `verifyToken` / `verifyRenter` / `verifyOwner` / `verifyAdmin` on the API, and mirrored by client-side route guards.
-- **UX:** toasts for every action, loading skeletons, dedicated loading/error/404 pages, responsive layout down to mobile, and a persisted **dark/light theme toggle** (stored in `localStorage`, applied before first paint).
-- **Design system:** one brand palette (ink + deep teal + coral + lime), one type scale (`.section-title`, `.eyebrow`, `.section-subtitle`), consistent cards, tables and buttons across every page.
-
----
-
-## Tech stack
-
-| Area | Packages |
+| Item | Details |
 | --- | --- |
-| Framework | `next` 16 (App Router, Turbopack, Cache Components, React Compiler), `react` 19, `react-dom` 19 |
+| Project | RentGear - Equipment Rental Platform |
+| Assignment | Assignment 9 - Category 003 |
+| Admin Email | `mhabuhanif230@gmail.com` |
+| Admin Password | `Hanif15387126` |
+| Live Site | https://rentgear-ivory.vercel.app |
+
+## Key Features
+
+### Public Experience
+
+- Responsive animated landing page built with Framer Motion
+- High-quality hero banner and live equipment search
+- Six featured approved listings
+- Popular category, benefits, how-it-works, reviews, and owner sections
+- Server-filtered equipment catalogue with search, location, category, rental type, price, availability, sorting, and pagination
+- Dedicated loading, error, and not-found pages
+
+### Authentication and Roles
+
+- Email/password registration and login
+- Password validation: minimum 6 characters with uppercase and lowercase letters
+- Google sign-in
+- JWT bearer authentication for protected API requests
+- Customer, owner, and admin role-based access control
+- Session restoration after page reload
+- Profile, photo, password, phone, and address management
+
+### Customer Dashboard
+
+- Rental history with payment and booking status
+- Favorite equipment and saved equipment removal
+- Equipment booking for a selected date range and quantity
+- Live stock availability and rental total calculation
+- Stripe Checkout payment flow
+- Server-verified payment success and cancellation pages
+- Rental reviews for completed rentals
+
+### Owner Dashboard
+
+- Add, view, edit, and delete equipment listings
+- ImgBB image upload or direct image URL
+- Automatic return of edited listings to pending status
+- Owner-specific equipment and rental records
+- Monthly earnings and completed-rental analytics
+- Mark paid and confirmed rentals as completed
+
+### Admin Dashboard
+
+- Platform totals and monthly booking charts
+- Users-by-role analytics
+- Search, role filtering, role changes, suspend, and restore
+- Equipment approval and rejection
+- Platform-wide booking monitoring
+- Cancel unpaid pending rentals or complete paid rentals
+
+### Optional Enhancements
+
+- Dark and light theme with browser persistence
+- 35-minute unpaid booking holds
+- Automated booking expiration and completed-rental updates
+- Optional Resend email notifications
+- Server-side pagination and URL-persisted catalogue filters
+
+## Stripe Test Payment
+
+The deployed API currently uses Stripe test credentials. Use this test card:
+
+| Field | Value |
+| --- | --- |
+| Card Number | `4242 4242 4242 4242` |
+| Expiry | Any future date, for example `12/30` |
+| CVC | Any three digits, for example `123` |
+| ZIP | Any five digits, for example `12345` |
+
+This card performs a safe Stripe test transaction and does not charge real money.
+
+## Technology Stack
+
+| Area | Technology |
+| --- | --- |
+| Framework | Next.js 16 App Router |
 | Language | TypeScript |
-| Styling | `tailwindcss` 4 with custom design tokens + shadcn-style UI primitives (`components/ui`) |
-| Animation | `framer-motion` |
-| Charts | `recharts` |
-| Icons | `lucide-react` |
-| Notifications | `react-hot-toast` |
-| HTTP | Better Auth session cookies plus `fetch` (wrapped in `src/lib/api.ts` with JWT Bearer handling for protected API requests) |
+| UI | Tailwind CSS 4, DaisyUI-style components, shadcn-style primitives |
+| Animation | Framer Motion |
+| Charts | Recharts |
+| Icons | Lucide React |
+| Notifications | React Hot Toast |
+| Authentication | Better Auth and JWT bearer sessions |
+| Image Hosting | ImgBB |
+| Payment | Stripe Checkout |
 
----
-
-## Getting started
-
-```bash
-# 1. install dependencies (Windows PowerShell: use npm.cmd)
-npm install
-
-# 2. configure the environment
-cp .env.example .env.local
-#    then edit .env.local
-
-# 3. run the dev server
-npm run dev
-```
-
-The Express API must be running (default `http://localhost:5000`) and its `CLIENT_URLS` must include `http://localhost:3000`.
-
-### Environment variables
-
-| Key | Required | Purpose |
-| --- | --- | --- |
-| `NEXT_PUBLIC_API_URL` | ✅ | Base URL of the API, e.g. `http://localhost:5000/api` |
-| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | ⬜ | OAuth Web Client ID for Google sign-in (must match the server's `GOOGLE_CLIENT_ID`; no client secret is needed for ID-token sign-in) |
-| `NEXT_PUBLIC_IMGBB_API_KEY` | ⬜ | ImgBB key for owner equipment and profile photo uploads |
-| `NEXT_PUBLIC_SITE_URL` | ⬜ | Public URL of this app |
-
-All frontend configuration is read from these env vars. Do not put database credentials, Stripe
-secret keys, OAuth client secrets, or other server secrets in the client environment. MongoDB and
-Stripe credentials belong only in the server's `.env`.
-
-The ImgBB key is a public upload key used for direct equipment and profile photo uploads. If it is omitted, users can still submit an existing image URL, but local file uploads are unavailable.
-
-### Scripts
-
-```bash
-npm run dev     # start the dev server
-npm run build   # production build (type-checks too)
-npm run start   # serve the production build
-npm run lint    # ESLint 9 (next lint was removed in Next 16)
-```
-
----
-
-## Route map
+## Route Map
 
 | Route | Access | Purpose |
 | --- | --- | --- |
-| `/` | public | Landing page (banner, featured, categories, why-us, reviews, extras) |
-| `/all-equipment` | public | Catalogue with server-side filters, sort and pagination |
-| `/equipment/[id]` | private | Details, favorites, booking modal, reviews |
-| `/login`, `/register` | public | Auth (Google login included) |
-| `/payment/success`, `/payment/cancel` | private | Stripe return pages with server-side verification |
-| `/dashboard` | all roles | Redirects each role to its own overview (also the Google sign-in callback target) |
-| `/dashboard/customer`, `/bookings`, `/favorites` | customer | Customer dashboard, rentals and favorites |
-| `/dashboard/owner`, `/add-equipment`, `/equipment`, `/bookings` | owner | Owner dashboard + listing CRUD |
-| `/dashboard/admin`, `/users`, `/equipment`, `/bookings` | admin | Admin dashboard + moderation |
-| `/profile` | all roles | Name, email, photo, phone, address |
-| `/about`, `/contact` | public | Company info, contact form, FAQ |
-| `loading.tsx`, `error.tsx`, `not-found.tsx` | — | Loading, error and 404 states |
+| `/` | Public | Landing page |
+| `/all-equipment` | Public | Searchable and filterable catalogue |
+| `/equipment/[id]` | Private | Equipment details, favorites, booking, and reviews |
+| `/login` | Public | Email or Google sign-in |
+| `/register` | Public | Account registration |
+| `/dashboard/customer/*` | Customer | Rentals, favorites, and overview |
+| `/dashboard/owner/*` | Owner | Equipment, bookings, and analytics |
+| `/dashboard/admin/*` | Admin | Users, equipment, rentals, and analytics |
+| `/profile` | Authenticated | Personal profile and security settings |
+| `/payment/success` | Authenticated | Payment verification and confirmation |
+| `/payment/cancel` | Authenticated | Retry or cancel an unpaid booking |
+| `/about`, `/contact` | Public | Platform information |
 
----
+## Local Setup
 
-## Project structure
+Requirements:
 
+- Node.js 20 or newer
+- npm
+- Running MongoDB or MongoDB Atlas
+- The Express API
+
+```bash
+npm install
+cp .env.example .env.local
+npm run dev
 ```
+
+Open `http://localhost:3000`.
+
+## Environment Variables
+
+Create `.env.local` from `.env.example`.
+
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_API_URL` | Express API base URL, normally `http://localhost:5000/api` |
+| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | Google OAuth Web Client ID |
+| `NEXT_PUBLIC_IMGBB_API_KEY` | ImgBB public upload API key |
+| `NEXT_PUBLIC_SITE_URL` | Public website URL |
+
+Never place MongoDB credentials, Stripe secret keys, or OAuth client secrets in the client
+environment. `NEXT_PUBLIC_*` variables are browser-visible and are not a replacement for
+server-side secret storage.
+
+## Scripts
+
+```bash
+npm run dev
+npm run build
+npm run start
+npm run lint
+```
+
+## Deployment
+
+The client is deployed on Vercel. Configure these production variables in the Vercel project:
+
+```env
+NEXT_PUBLIC_API_URL=https://equipment-rental-server.onrender.com/api
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=<google-web-client-id>
+NEXT_PUBLIC_IMGBB_API_KEY=<imgbb-api-key>
+NEXT_PUBLIC_SITE_URL=https://rentgear-ivory.vercel.app
+```
+
+Redeploy after changing `NEXT_PUBLIC_*` variables because Next.js embeds public environment
+variables into the build.
+
+## Project Structure
+
+```text
 src/
-├── app/                  # App Router pages, layouts, loading/error/404
-│   ├── (auth)/           #   login, register
-│   ├── all-equipment/    #   catalogue (search/filter/sort)
-│   ├── equipment/[id]/   #   details + booking
-│   ├── payment/          #   success, cancel
-│   ├── dashboard/        #   customer, owner, admin areas
-│   ├── profile/ about/ contact/
-│   ├── error.tsx, loading.tsx, not-found.tsx
-├── components/           # Navbar, Footer, cards, tables, charts, modals
-├── context/              # AuthContext (JWT session), ThemeContext (dark mode)
-├── lib/                  # api client, shared types, formatting helpers
-└── public/images/        # hand-made SVG artwork (hero, auth, owners, placeholder)
+  app/            App Router pages and layouts
+  components/     Navigation, cards, tables, charts, modals, and UI
+  context/        Authentication and theme providers
+  lib/            API client, types, formatting, and image upload helpers
+public/
+  images/         Local image assets
 ```
