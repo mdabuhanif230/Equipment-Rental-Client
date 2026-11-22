@@ -7,6 +7,8 @@ import { useAuth } from "@/context/AuthContext";
 import type { Role } from "@/lib/types";
 
 const GOOGLE_IDENTITY_SCRIPT = "https://accounts.google.com/gsi/client";
+const GOOGLE_CLIENT_ID =
+  "149283216581-vjliqf2ebqkaqqu5mhrsf435uk8hfep8.apps.googleusercontent.com";
 const dashboardPath: Record<Role, string> = {
   customer: "/dashboard/customer",
   owner: "/dashboard/owner",
@@ -63,7 +65,8 @@ export default function GoogleLoginButton({
   const [busy, setBusy] = useState(false);
   const [showSetupHint, setShowSetupHint] = useState(false);
   const [scriptFailed, setScriptFailed] = useState(false);
-  const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+  const clientId =
+    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID;
   const busyRef = useRef(false);
   const needsSignupRole = text === "signup_with";
   const canContinue = !needsSignupRole || Boolean(signupRole);
