@@ -35,6 +35,7 @@ export default function BookingModal({ item, onClose }: BookingModalProps) {
   }));
   const [avail, setAvail] = useState<{ key: string; data: Availability | null } | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [testMode, setTestMode] = useState(false);
 
   const dateError = useMemo(() => {
     if (!form.startDate || !form.endDate) return "";
@@ -102,7 +103,11 @@ export default function BookingModal({ item, onClose }: BookingModalProps) {
 
     setSubmitting(true);
     try {
-      const { checkoutUrl } = await api.post<{ bookingId: string; checkoutUrl: string }>("/bookings", {
+      const { checkoutUrl, testMode: isTestMode } = await api.post<{
+        bookingId: string;
+        checkoutUrl: string;
+        testMode: boolean;
+      }>("/bookings", {
         equipmentId: item._id,
         startDate: form.startDate,
         endDate: form.endDate,
@@ -111,6 +116,12 @@ export default function BookingModal({ item, onClose }: BookingModalProps) {
         address: form.address.trim(),
         notes: form.notes.trim(),
       });
+      setTestMode(isTestMode);
+      if (isTestMode) {
+        toast("Test mode: use 4242 4242 4242 4242; no real charge will be made.", {
+          duration: 6000,
+        });
+      }
       toast.success("Booking created — redirecting to secure checkout…");
       window.location.href = checkoutUrl; // Stripe Checkout
     } catch (err) {
@@ -257,6 +268,14 @@ export default function BookingModal({ item, onClose }: BookingModalProps) {
             Creating a booking holds the stock for 35 minutes while you complete the Stripe payment.
             You can cancel an unpaid booking from your dashboard at any time.
           </p>
+
+          {testMode && (
+            <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 text-xs">
+              <p className="font-bold">Stripe test card</p>
+              <p className="mt-1 font-mono">4242 4242 4242 4242</p>
+              <p className="mt-1 opacity-70">Expiry: any future date · CVC: any 3 digits · No real money is charged.</p>
+            </div>
+          )}
 
           <div className="ui-modal-action mt-0">
             <button type="button" className="ui-button ui-button-ghost" onClick={onClose} disabled={submitting}>
