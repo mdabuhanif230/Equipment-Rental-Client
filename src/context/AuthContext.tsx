@@ -15,6 +15,7 @@ import {
   ApiError,
   api,
   clearSession,
+  getToken,
   getStoredUser,
   refreshAuthToken,
   storeSession,
@@ -86,17 +87,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const cached = getStoredUser<User>();
     const restore = async () => {
       try {
-        const session = await authClient.getSession();
-        if (session.error) {
-          throw new ApiError(session.error.message || "Could not restore your session.", session.error.status);
-        }
-        if (!session.data?.user) {
+        if (!getToken()) {
           clearSession();
           return;
         }
         const token = await refreshAuthToken();
-        storeSession(token, session.data.user);
         const { user: fresh } = await api.get<{ user: User }>("/users/me");
+        storeSession(token, fresh);
         if (active) {
           setUser(fresh);
           updateUserCache(fresh);
@@ -133,36 +130,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       toast.error(problem);
       throw new Error(problem);
     }
-    const result = await authClient.signUp.email({
+    const result = await api.post<{ token: string; user: User }>("/auth/local/sign-up", {
       name: input.name,
       email: input.email,
       password: input.password,
-      image: input.photoURL,
+      photoURL: input.photoURL,
       role: input.role,
-    });
-    if (result.error) throw new Error(result.error.message || "Could not create your account.");
-    return loadAuthenticatedUser("Welcome to RentGear, {name}!");
+    }, { auth: false });
+    storeSession(result.token, result.user);
+    setUser(result.user);
+    toast.success(`Welcome to RentGear, ${result.user.name}!`);
+    return result.user;
   }, [loadAuthenticatedUser]);
 
   const login = useCallback(async (email: string, password: string): Promise<User> => {
-    const result = await authClient.signIn.email({ email, password });
-    if (result.error) throw new Error(result.error.message || "Email or password is incorrect.");
-    return loadAuthenticatedUser("Welcome, {name}!");
+    const result = await api.post<{ token: string; user: User }>("/auth/local/sign-in", { email, password }, { auth: false });
+    storeSession(result.token, result.user);
+    setUser(result.user);
+    toast.success(`Welcome, ${result.user.name}!`);
+    return result.user;
   }, [loadAuthenticatedUser]);
 
   const loginWithGoogle = useCallback(async (
     idToken: string,
     signupRole?: Exclude<Role, "admin">,
   ): Promise<User> => {
-    await api.post<{ token: string; user: User }>(
-      "/auth/one-tap/callback",
+    const result = await api.post<{ token: string; user: User }>(
+      "/auth/google/callback",
       { idToken, callbackURL: `${window.location.origin}/dashboard` },
       {
         auth: false,
         headers: signupRole ? { "X-Signup-Role": signupRole } : undefined,
       },
     );
-    let authenticatedUser = await loadAuthenticatedUser("Welcome back, {name}!");
+    storeSession(result.token, result.user);
+    let authenticatedUser = result.user;
+    setUser(authenticatedUser);
     const googlePhoto = getGoogleProfilePhoto(idToken);
     // Gmail sign-in always means the current Gmail picture is shown.
     const needsGooglePhoto = Boolean(googlePhoto) && googlePhoto !== authenticatedUser.photoURL;
@@ -184,8 +187,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [loadAuthenticatedUser]);
 
   const logout = useCallback(async () => {
-    const result = await authClient.signOut();
-    if (result.error) throw new Error(result.error.message || "Could not end the session.");
     clearSession();
     setUser(null);
     toast.success("You have been logged out.");

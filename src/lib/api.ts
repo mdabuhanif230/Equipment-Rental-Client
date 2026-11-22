@@ -39,10 +39,13 @@ export function storeSession(token: string, user: unknown): void {
 }
 
 export async function refreshAuthToken(): Promise<string> {
+  const currentToken = getToken();
   let res: Response;
   try {
-    res = await fetch(`${API_URL}/auth/token`, {
-      credentials: "include",
+    res = await fetch(`${API_URL}/auth/local/refresh`, {
+      method: "POST",
+      headers: currentToken ? { Authorization: `Bearer ${currentToken}` } : undefined,
+      credentials: "omit",
       cache: "no-store",
     });
   } catch {
