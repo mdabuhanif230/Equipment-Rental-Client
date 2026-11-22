@@ -1,7 +1,8 @@
 import type { Paginated } from "./types";
 
 export const API_URL =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:5000/api";
+  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
+  "https://equipment-rental-server.onrender.com/api";
 
 const TOKEN_KEY = "er_token";
 const USER_KEY = "er_user";
